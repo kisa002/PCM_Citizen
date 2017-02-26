@@ -54,9 +54,9 @@
 
             <Button
                 android:background="@drawable/round"
-                android:text="Today Schedule\n\n1교시 : 프그\n2교시 : 프그\n3교시 : 컴일\n4교시 : 컴일\n5교시 : 체육\n6교시 : 체육"
+                android:text="Today Schedule\n\nServer Connecting..."
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="180dp"
                 android:layout_marginTop="23dp"
                 android:layout_below="@+id/btn_lunch"
                 android:layout_alignLeft="@+id/btn_lunch"

@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,14 +42,9 @@ import java.net.URLConnection;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ///버튼 관리
-    private ImageView img_wather;
-    String imgUrl = "https://ssl.pstatic.net/static/weather/images/w_icon/w_t01.gif";
-    Bitmap bmImg;
-    back task;
-
     private Button btn_weather;
     private Button btn_lunch;
+    private Button btn_schedule;
 
     String lunch_month[] = new String[32];
 
@@ -57,15 +53,22 @@ public class MainActivity extends AppCompatActivity
 
     String web_text = null;
 
+    String lunchVersion = null;
+    String scheduleVersion = null;
+    String calendarVersion = null;
+
     String weather_text = null;
     String lunch_text = null;
     String schedule_text = null;
     String calendar_text = null;
 
-    Boolean data_load = false;
+    String schedule[] = new String[5];
 
     String infoName, infoCode;
     int infoGrade, infoClass, infoNumber;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,24 +76,25 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //데이터 받아오자
+        //상태바 없애자
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        //User 데이터 받아오기
         SharedPreferences user = getSharedPreferences("User", 0);
         infoName = user.getString("infoName", "ERROR");
-        infoCode = user.getString("infoCde", "ERROR");
+        infoCode = user.getString("infoCode", "ERROR");
 
         infoGrade = user.getInt("infoGrade", 0);
         infoClass = user.getInt("infoClass", 0);
         infoNumber = user.getInt("infoNumber", 0);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        //Version 정보
+        SharedPreferences spVersion = getSharedPreferences("Version", 0);
+        //scheduleVersion = spVersion.getString("Schedule", null);
+        calendarVersion = spVersion.getString("Calendar", null);
+        lunchVersion = spVersion.getString("Lunch", null);
 
+        //네비게이션
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,19 +104,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //레이아웃
         btn_weather = (Button)findViewById(R.id.btn_weather);
         btn_lunch = (Button)findViewById(R.id.btn_lunch);
+        btn_schedule = (Button)findViewById(R.id.btn_scheudle);
 
         //데이터 파싱
         urlAddress = "http://www.accuweather.com/ko/kr/pyeongchon-dong/2041963/current-weather/2041963";
         loadHtml(1);
-
-        /*
-        img_wather = (ImageView)findViewById(R.id.img_weather);
-
-        task = new back();
-        task.execute("https://ssl.pstatic.net/static/weather/images/w_icon/w_t01.gif");
-        */
 
         lunch_load();
     }
@@ -153,28 +152,34 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_schedule) {
-            // Handle the camera action
-        } else if (id == R.id.nav_lunch) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();     //닫기
-                }
-            });
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();     //닫기
+            }
+        });
 
-            alert.setTitle("오늘 급식");
-            alert.setMessage(lunch_text);
-            //alert.show();
-        } else if (id == R.id.nav_calendar) {
+        switch(item.getItemId())
+        {
+            case R.id.nav_schedule:
+                break;
 
-        } else if (id == R.id.nav_notice) {
+            case R.id.nav_lunch:
+                alert.setTitle("오늘 급식");
+                alert.setMessage(lunch_text);
+                //alert.show();
+                break;
 
-        } else if (id == R.id.nav_quit) {
+            case R.id.nav_calendar:
+                break;
 
+            case R.id.nav_notice:
+                break;
+
+            case R.id.nav_quit:
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -204,7 +209,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.btn_lunch:
-                //urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+"201703"+"&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
+                urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+"201703"+"&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
 
                 loadHtml(0);
                 alert.setTitle("오늘 급식");
@@ -215,7 +220,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.btn_scheudle:
                 urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
                 loadHtml(3);
-                alert.setMessage(schedule_text);
+                alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
                 //alert.show();
                 break;
 
@@ -417,7 +422,7 @@ public class MainActivity extends AppCompatActivity
                                         alert.setTitle("오늘 급식");
                                         alert.setMessage(lunch_text);
                                         //alert.show();
-                                        break;
+                                        //break;
                                     }
                                     else {
 
@@ -434,9 +439,120 @@ public class MainActivity extends AppCompatActivity
 
                                 case 3:
                                     //시간표
-                                    schedule_text = web_text;
-                                    alert.setMessage(schedule_text);
-                                    alert.show();
+                                    SharedPreferences spSchedule = getSharedPreferences("Schedule", 0);
+                                    SharedPreferences.Editor spEditor = spSchedule.edit();
+
+                                    scheduleVersion = spSchedule.getString("Version", null);
+
+                                    String tmp;
+                                    int i;
+
+                                    pos1 = schedule_text.indexOf("=");
+                                    pos2 = schedule_text.indexOf(";");
+                                    tmp = schedule_text.substring(pos1 + 1, pos2);
+
+                                    if(tmp != scheduleVersion)
+                                    {
+                                        StringBuffer sb;
+
+                                        pos1 = schedule_text.indexOf("[" + infoCode + "]");
+                                        schedule_text = schedule_text.substring(pos1, schedule_text.length());
+
+                                        pos1 = schedule_text.indexOf("월") + 2;
+                                        pos2 = schedule_text.indexOf(";");
+                                        schedule[0] = schedule_text.substring(pos1, pos2);
+                                        schedule[0] = schedule[0].replaceAll("/", "\ni교시 : ");
+                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                        schedule[0] = "i교시 : " + schedule[0];
+                                        sb = new StringBuffer(schedule[0]);
+
+                                        for(i=1; i<=7;  i++)
+                                        {
+                                            pos1 = sb.indexOf("i교시");
+                                            sb.delete(pos1, pos1 + 1);
+                                            sb.insert(pos1, i);
+                                        }
+                                        schedule[0] = sb.toString();
+
+                                        pos1 = schedule_text.indexOf("화") + 2;
+                                        pos2 = schedule_text.indexOf(";");
+                                        schedule[1] = schedule_text.substring(pos1, pos2);
+                                        schedule[1] = schedule[1].replace("/", "\ni교시 : ");
+                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                        schedule[1] = "i교시 : " + schedule[1];
+                                        sb = new StringBuffer(schedule[1]);
+
+                                        for(i=1; i<=7;  i++)
+                                        {
+                                            pos1 = sb.indexOf("i교시");
+                                            sb.delete(pos1, pos1 + 1);
+                                            sb.insert(pos1, i);
+                                        }
+                                        schedule[1] = sb.toString();
+
+                                        pos1 = schedule_text.indexOf("수") + 2;
+                                        pos2 = schedule_text.indexOf(";");
+                                        schedule[2] = schedule_text.substring(pos1, pos2);
+                                        schedule[2] = schedule[2].replaceAll("/", "\ni교시 : ");
+                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                        schedule[2] = "i교시 : " + schedule[2];
+                                        sb = new StringBuffer(schedule[2]);
+                                        for(i=1; i<=7;  i++)
+                                        {
+                                            pos1 = sb.indexOf("i교시");
+                                            sb.delete(pos1, pos1 + 1);
+                                            sb.insert(pos1, i);
+                                        }
+                                        schedule[2] = sb.toString();
+
+                                        pos1 = schedule_text.indexOf("목") + 2;
+                                        pos2 = schedule_text.indexOf(";");
+                                        schedule[3] = schedule_text.substring(pos1, pos2);
+                                        schedule[3] = schedule[3].replaceAll("/", "\ni교시 : ");
+                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                        schedule[3] = "i교시 : " + schedule[3];
+                                        sb = new StringBuffer(schedule[3]);
+                                        for(i=1; i<=7;  i++)
+                                        {
+                                            pos1 = sb.indexOf("i교시");
+                                            sb.delete(pos1, pos1 + 1);
+                                            sb.insert(pos1, i);
+                                        }
+                                        schedule[3] = sb.toString();
+
+                                        pos1 = schedule_text.indexOf("금") + 2;
+                                        pos2 = schedule_text.indexOf(";");
+                                        schedule[4] = schedule_text.substring(pos1, pos2);
+                                        schedule[4] = schedule[4].replaceAll("/", "\ni교시 : ");
+                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                        schedule[4] = "i교시 : " + schedule[4];
+                                        sb = new StringBuffer(schedule[4]);
+
+                                        for(i=1; i<=7;  i++)
+                                        {
+                                            pos1 = sb.indexOf("i교시");
+                                            sb.delete(pos1, pos1 + 1);
+                                            sb.insert(pos1, i);
+                                        }
+                                        schedule[4] = sb.toString();
+
+                                        btn_schedule.setText("Today Schedule\n\n" + schedule[4]);
+                                        //alert.setMessage(schedule_text);
+                                        //alert.setMessage(String.valueOf(pos1));
+                                        //alert.setMessage(tmp);
+                                        //alert.setMessage(schedule[4]);
+                                        //alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
+                                        //alert.show();
+
+                                        spEditor.putString("Version", tmp);
+                                        spEditor.putString("Monday", schedule[0]);
+                                        spEditor.putString("Tuesday", schedule[1]);
+                                        spEditor.putString("Wednesday", schedule[2]);
+                                        spEditor.putString("Thursday", schedule[3]);
+                                        spEditor.putString("Friday", schedule[4]);
+                                        spEditor.commit();
+                                    }
+                                    break;
                             }
                         }
                     });
@@ -446,36 +562,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
         t.start(); // 쓰레드 시작
-    }
-
-    private class back extends AsyncTask<String, Integer,Bitmap> {
-
-
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            // TODO Auto-generated method stub
-            try{
-                URL myFileUrl = new URL(urls[0]);
-                HttpURLConnection conn = (HttpURLConnection)myFileUrl.openConnection();
-                conn.setDoInput(true);
-                conn.connect();
-
-                InputStream is = conn.getInputStream();
-
-                bmImg = BitmapFactory.decodeStream(is);
-
-
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-            return bmImg;
-        }
-
-        protected void onPostExecute(Bitmap img){
-            img_wather.setImageBitmap(bmImg);
-        }
-
     }
 
 }
