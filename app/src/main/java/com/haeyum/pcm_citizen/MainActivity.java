@@ -64,12 +64,23 @@ public class MainActivity extends AppCompatActivity
 
     Boolean data_load = false;
 
+    String infoName, infoCode;
+    int infoGrade, infoClass, infoNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //데이터 받아오자
+        SharedPreferences user = getSharedPreferences("User", 0);
+        infoName = user.getString("infoName", "ERROR");
+        infoCode = user.getString("infoCde", "ERROR");
+
+        infoGrade = user.getInt("infoGrade", 0);
+        infoClass = user.getInt("infoClass", 0);
+        infoNumber = user.getInt("infoNumber", 0);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +115,6 @@ public class MainActivity extends AppCompatActivity
         */
 
         lunch_load();
-
     }
 
     @Override

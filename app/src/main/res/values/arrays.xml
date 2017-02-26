@@ -2,12 +2,14 @@
 <resources>
 
     <string-array name="Grade">
+        <item>학년 선택</item>
         <item >1학년</item>
         <item >2학년</item>
         <item >3학년</item>
     </string-array>
 
     <string-array name="Class">
+        <item>반 선택</item>
         <item >1반</item>
         <item >2반</item>
         <item >3반</item>
@@ -24,6 +26,7 @@
     </string-array>
 
     <string-array name="Number">
+        <item>번호 선택</item>
         <item >1번</item>
         <item >2번</item>
         <item >3번</item>
