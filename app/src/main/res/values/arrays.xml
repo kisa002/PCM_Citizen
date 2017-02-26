@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="Grade">
+        <item >1학년</item>
+        <item >2학년</item>
+        <item >3학년</item>
+    </string-array>
+
+    <string-array name="Class">
+        <item >1반</item>
+        <item >2반</item>
+        <item >3반</item>
+        <item >4반</item>
+        <item >5반</item>
+        <item >6반</item>
+        <item >7반</item>
+        <item >8반</item>
+        <item >9반</item>
+        <item >10반</item>
+        <item >11반</item>
+        <item >12반</item>
+        <item >13반</item>
+    </string-array>
+
+    <string-array name="Number">
+        <item >1번</item>
+        <item >2번</item>
+        <item >3번</item>
+        <item >4번</item>
+        <item >5번</item>
+        <item >6번</item>
+        <item >7번</item>
+        <item >8번</item>
+        <item >9번</item>
+        <item >10번</item>
+        <item >11번</item>
+        <item >12번</item>
+        <item >13번</item>
+        <item >14번</item>
+        <item >15번</item>
+        <item >16번</item>
+        <item >17번</item>
+        <item >18번</item>
+        <item >19번</item>
+        <item >20번</item>
+        <item >21번</item>
+        <item >22번</item>
+        <item >23번</item>
+        <item >24번</item>
+        <item >25번</item>
+        <item >26번</item>
+        <item >27번</item>
+        <item >28번</item>
+        <item >29번</item>
+        <item >30번</item>
+    </string-array>
+
+</resources>

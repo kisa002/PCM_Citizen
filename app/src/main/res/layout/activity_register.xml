@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_register"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.haeyum.pcm_citizen.RegisterActivity">
+
+
+    <!--<TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1"
+        android:layout_above="@+id/btn_register"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp" />-->
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editTextName"
+        android:hint="이름"
+        android:gravity="center"
+        android:layout_above="@+id/spinner_grade"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp" />
+
+    <Spinner
+        android:id="@+id/spinner_grade"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/spinner_class"
+        android:layout_marginBottom="32dp"
+        android:layout_alignRight="@+id/editTextName"
+        android:layout_alignEnd="@+id/editTextName"
+        android:layout_alignLeft="@+id/editTextName"
+        android:layout_alignStart="@+id/editTextName" />
+
+    <Spinner
+        android:id="@+id/spinner_class"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/spinner_grade"
+        android:layout_alignEnd="@+id/spinner_grade"
+        android:layout_alignLeft="@+id/spinner_grade"
+        android:layout_alignStart="@+id/spinner_grade" />
+
+    <Spinner
+        android:id="@+id/spinner_number"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_class"
+        android:layout_marginTop="32dp"
+        android:layout_alignRight="@+id/spinner_class"
+        android:layout_alignEnd="@+id/spinner_class"
+        android:layout_alignLeft="@+id/spinner_class"
+        android:layout_alignStart="@+id/spinner_class" />
+
+    <Button
+        android:background="@drawable/round"
+        android:text="학생 등록"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_register"
+        android:onClick="onClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/spinner_number"
+        android:layout_alignStart="@+id/spinner_number"
+        android:layout_marginBottom="49dp"
+        android:layout_alignRight="@+id/spinner_number"
+        android:layout_alignEnd="@+id/spinner_number" />
+
+</RelativeLayout>

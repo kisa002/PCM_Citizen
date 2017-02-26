@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
 
     String weather_text = null;
     String lunch_text = null;
+    String schedule_text = null;
+    String calendar_text = null;
 
     Boolean data_load = false;
 
@@ -184,22 +186,27 @@ public class MainActivity extends AppCompatActivity
         switch (v.getId()) {
 
             case R.id.btn_weather:
+                urlAddress = "http://www.accuweather.com/ko/kr/pyeongchon-dong/2041963/current-weather/2041963";
+                loadHtml(1);
                 alert.setTitle("오늘 날씨");
                 alert.setMessage(weather_text);
                 alert.show();
                 break;
 
             case R.id.btn_lunch:
+                //urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+"201703"+"&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
+
+                loadHtml(0);
                 alert.setTitle("오늘 급식");
                 alert.setMessage(lunch_text);
                 //alert.show();
-
-                loadHtml(0);
-                Log.d("OK","");
                 break;
 
             case R.id.btn_scheudle:
-
+                urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
+                loadHtml(3);
+                alert.setMessage(schedule_text);
+                //alert.show();
                 break;
 
             case R.id.btn_calendar:
@@ -300,7 +307,6 @@ public class MainActivity extends AppCompatActivity
                                         if(lunch_month[0].indexOf("<div>" + i) != -1)
                                         {
                                             max_lunch = i;
-                                            //Toast.makeText(MainActivity.this, "F : " + String.valueOf(i), Toast.LENGTH_SHORT).show();
                                             break;
                                         }
 
@@ -308,26 +314,13 @@ public class MainActivity extends AppCompatActivity
                                     {
                                         pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
                                         pos2 = lunch_month[0].indexOf("알레르기") + 4;
-                                        //Toast.makeText(MainActivity.this, "POS1 : " + pos1 + "\nPOS2 : " + pos2, Toast.LENGTH_SHORT).show();
                                         lunch_month[0] = lunch_month[0].substring(pos1, pos2);
 
                                         pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i));
                                         pos2 = lunch_month[0].indexOf("</td>");
 
-                                        //Toast.makeText(MainActivity.this, "POS1 : " + pos1 + "\nPOS2 : " + pos2, Toast.LENGTH_SHORT).show();
                                         lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
-
-                                        //pos1 = lunch_month[0].indexOf("</td>") + 4;
-                                        //pos2 = lunch_month[0].indexOf("알레르기") + 4;
-                                        //lunch_month[0] = lunch_month[0].substring(pos1, pos2);
-                                        //Log.d("M : ", lunch_month[i]);
-
-                                        alert.setMessage("TEXT\n" + lunch_month[0]);
-                                        //alert.show();
                                     }
-
-                                    //alert.setMessage("TEXT\n" + lunch_month[17]);
-                                    //alert.show();
 
                                     String temp = "";
 
@@ -339,22 +332,26 @@ public class MainActivity extends AppCompatActivity
 
                                     for(int i=1; i <= max_lunch; i++)
                                     {
+                                        temp += "[" + i + "일]";
                                         lunch_month[i] = lunch_month[i].replace("<div>" + i,"");
                                         lunch_month[i] = lunch_month[i].replace("</div>","");
                                         lunch_month[i] = lunch_month[i].replace("<br />","\n");
                                         lunch_month[i] = lunch_month[i].replace("</td>","");
 
                                         if(lunch_month[i].indexOf("중식") == -1)
-                                            lunch_month[i] = "급식이 없습니다.\n";
+                                            lunch_month[i] = "\n급식이 없습니다.\n";
+                                        else
+                                            lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
 
-                                        temp += lunch_month[i];
+                                        lunch_month[i] = lunch_month[i].replace("[중식]","");
+
+                                        temp += lunch_month[i] + "\n";
 
                                         editor.putString("lunch_201703m"  + i + "d", lunch_month[i]); //lunch_10m3d
                                         editor.commit();
                                     }
 
                                     alert.setTitle("이번달 급식");
-                                    alert.setMessage(pos1 + " / " + pos2);
                                     alert.setMessage(temp);
                                     alert.show();
 
@@ -421,6 +418,15 @@ public class MainActivity extends AppCompatActivity
                                         alert.setMessage(lunch_text);
                                         //alert.show();
                                     }
+                                    urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
+                                    loadHtml(3);
+                                    break;
+
+                                case 3:
+                                    //시간표
+                                    schedule_text = web_text;
+                                    alert.setMessage(schedule_text);
+                                    alert.show();
                             }
                         }
                     });
