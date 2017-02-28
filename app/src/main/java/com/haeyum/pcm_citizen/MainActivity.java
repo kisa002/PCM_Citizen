@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private Button btn_weather;
     private Button btn_lunch;
     private Button btn_schedule;
+    private Button btn_calendar;
 
     //학생 정보
     String infoName, infoCode;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     //데이터베이스
     String lunch_month[] = new String[32];
     String schedule[] = new String[5];
-    String calendar[][] = new String[12][32];
+    String calendar[] = new String[13];
     String monthC; //monthChange
 
     //날짜
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity
 
         //날짜
         year = oCalendar.get(Calendar.YEAR);
-        month = oCalendar.get(Calendar.MONTH) + 1 + 1; //이거 +1 지우자
+        month = oCalendar.get(Calendar.MONTH) + 1; //이거 +1 지우자
         day = oCalendar.get(Calendar.DAY_OF_MONTH);
         if(month < 10)
             monthC = "0" + String.valueOf(month);
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity
         btn_weather = (Button)findViewById(R.id.btn_weather);
         btn_lunch = (Button)findViewById(R.id.btn_lunch);
         btn_schedule = (Button)findViewById(R.id.btn_scheudle);
+        btn_calendar = (Button)findViewById(R.id.btn_calendar);
 
         //데이터 파싱
         loadHtml(1);
@@ -239,14 +241,14 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.btn_scheudle:
-                urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
                 loadHtml(3);
                 alert.setMessage("[월요일]\n" + schedule[0] + "\n\n[화요일]\n" + schedule[1] + "\n\n[수요일]\n" + schedule[2] + "\n\n[목요일]\n" + schedule[3] + "\n\n[금요일]\n" + schedule[4]);
                 alert.show();
                 break;
 
             case R.id.btn_calendar:
-
+                loadHtml(4);
+                onAlert("올해 일정", calendar[1] + "\n\n" + calendar[2] + "\n\n" + calendar[3] + "\n\n" + calendar[4] + "\n\n" + calendar[5] + "\n\n" + calendar[6] + "\n\n" + calendar[7] + "\n\n" + calendar[8] + "\n\n" + calendar[9] + "\n\n" + calendar[10] + "\n\n" + calendar[11] + "\n\n" + calendar[12]);
                 break;
         }
     }
@@ -603,12 +605,14 @@ public class MainActivity extends AppCompatActivity
                                         if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                                             btn_schedule.setText("Today Schedule\n\n행복한 주말");
                                         else
-                                            btn_schedule.setText(schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
+                                            btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
                                     }
                                     break;
 
                                 case 4:
                                     calendar_text = web_text;
+
+                                    StringBuffer sb2;
 
                                     SharedPreferences spCalendar = getSharedPreferences("Calendar", 0);
                                     SharedPreferences.Editor speCalendar = spCalendar.edit();
@@ -625,11 +629,11 @@ public class MainActivity extends AppCompatActivity
 
                                         for(i=1; i<=12; i++) {
                                             if(i < 10) {
-                                                pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 7; //201703
+                                                pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 9; //201703
                                                 pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
                                             }
                                             else {
-                                                pos1 = calendar_text.indexOf("[" + year + i + "]") + 7; //201703
+                                                pos1 = calendar_text.indexOf("[" + year + i + "]") + 9; //201703
                                                 pos2 = calendar_text.indexOf("[" + year + i + "]$"); //201703$
                                             }
 
@@ -637,22 +641,15 @@ public class MainActivity extends AppCompatActivity
 
                                             if(pos1 != -1) {
                                                 tmp = calendar_text.substring(pos1, pos2);
+                                                tmp = tmp.replace("=", "일 : ");
 
-                                                for (int j = 1; j < 32; j++) {
-                                                    pos1 = tmp.indexOf("=");
-                                                    pos2 = tmp.indexOf(";");
-
-                                                    if (pos1 != -1) {
-                                                        tmp2 = tmp.substring(pos1 - 2, pos1);
-
-                                                        calendar[i][Integer.parseInt(tmp2)] = tmp.substring(pos1 + 1, pos2);
-                                                        Log.d(i + "월" + Integer.parseInt(tmp2) + "일 : ", calendar[i][Integer.parseInt(tmp2)]);
-
-                                                        tmp = tmp.substring(pos2 + 1, tmp.length());
-                                                    }
-                                                }
+                                                calendar[i] = i + "월 일정표\n\n" + tmp;
+                                                calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
+                                                //Log.d("", calendar[i]);
                                             }
                                         }
+
+                                        btn_calendar.setText(calendar[month]);
 
                                         //onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
                                     }
