@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity
 
                             int pos1, pos2, i;
 
-                            String ver, tmp;
+                            String ver, tmp, tmp2, temp = "";
 
                             switch (menu)
                             {
@@ -378,8 +378,6 @@ public class MainActivity extends AppCompatActivity
 
                                         lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
                                     }
-
-                                    String temp = "";
 
                                     SharedPreferences lunch = getSharedPreferences("HAEYUM", 0);
                                     SharedPreferences.Editor editor = lunch.edit();
@@ -625,26 +623,33 @@ public class MainActivity extends AppCompatActivity
                                     {
                                         calendar_text = calendar_text.substring(pos1, calendar_text.length());
 
-                                        for(i=2; i<3; i++) {
+                                        for(i=1; i<=12; i++) {
                                             if(i < 10) {
                                                 pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 7; //201703
                                                 pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
                                             }
+                                            else {
+                                                pos1 = calendar_text.indexOf("[" + year + i + "]") + 7; //201703
+                                                pos2 = calendar_text.indexOf("[" + year + i + "]$"); //201703$
+                                            }
 
-                                            onAlert("", pos1 + " / " + pos2);
-                                            onAlert("", calendar_text);
-                                            tmp = calendar_text.substring(pos1 ,pos2);
-                                            onAlert("", tmp);
+                                            //onAlert("", pos1 + " / " + pos2);
 
-                                            for(int j=0; j<5; j++) {
-                                                pos1 = tmp.indexOf(j) + 2;
-                                                pos2 = tmp.indexOf(";");
+                                            if(pos1 != -1) {
+                                                tmp = calendar_text.substring(pos1, pos2);
 
-                                                if(pos1 != -1) {
-                                                    calendar[i][j] = tmp.substring(pos1, pos2);
-                                                    tmp = tmp.substring(pos2 + 1, tmp.length());
+                                                for (int j = 1; j < 32; j++) {
+                                                    pos1 = tmp.indexOf("=");
+                                                    pos2 = tmp.indexOf(";");
 
-                                                    Log.d(i + "월" + j + "일 : ", calendar[i][j]);
+                                                    if (pos1 != -1) {
+                                                        tmp2 = tmp.substring(pos1 - 2, pos1);
+
+                                                        calendar[i][Integer.parseInt(tmp2)] = tmp.substring(pos1 + 1, pos2);
+                                                        Log.d(i + "월" + Integer.parseInt(tmp2) + "일 : ", calendar[i][Integer.parseInt(tmp2)]);
+
+                                                        tmp = tmp.substring(pos2 + 1, tmp.length());
+                                                    }
                                                 }
                                             }
                                         }
