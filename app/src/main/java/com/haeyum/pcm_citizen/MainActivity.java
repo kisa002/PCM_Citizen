@@ -38,34 +38,45 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    //레이아웃
     private Button btn_weather;
     private Button btn_lunch;
     private Button btn_schedule;
 
-    String lunch_month[] = new String[32];
+    //학생 정보
+    String infoName, infoCode;
+    int infoGrade, infoClass, infoNumber;
 
+    //웹파싱
     String urlAddress = null;
     Handler handler = new Handler(); // 화면에 그려주기 위한 객체
 
-    String web_text = null;
-
+    //버전 체크
     String lunchVersion = null;
     String scheduleVersion = null;
     String calendarVersion = null;
 
+    //웹파싱 임시 변수
+    String web_text = null;
     String weather_text = null;
     String lunch_text = null;
     String schedule_text = null;
     String calendar_text = null;
 
+    //데이터베이스
+    String lunch_month[] = new String[32];
     String schedule[] = new String[5];
+    String calendar[][] = new String[12][32];
+    String monthC; //monthChange
 
-    String infoName, infoCode;
-    int infoGrade, infoClass, infoNumber;
+    //날짜
+    Calendar oCalendar = Calendar.getInstance( );
+    int year, month, day;
 
 
 
@@ -87,6 +98,16 @@ public class MainActivity extends AppCompatActivity
         infoGrade = user.getInt("infoGrade", 0);
         infoClass = user.getInt("infoClass", 0);
         infoNumber = user.getInt("infoNumber", 0);
+
+        //날짜
+        year = oCalendar.get(Calendar.YEAR);
+        month = oCalendar.get(Calendar.MONTH) + 1 + 1; //이거 +1 지우자
+        day = oCalendar.get(Calendar.DAY_OF_MONTH);
+        if(month < 10)
+            monthC = "0" + String.valueOf(month);
+        else
+            monthC = String.valueOf(month);
+        //onAlert("날짜", String.valueOf(year) + "\n" + String.valueOf(month) + "\n" + String.valueOf(day));
 
         //Version 정보
         SharedPreferences spVersion = getSharedPreferences("Version", 0);
@@ -110,8 +131,10 @@ public class MainActivity extends AppCompatActivity
         btn_schedule = (Button)findViewById(R.id.btn_scheudle);
 
         //데이터 파싱
-        urlAddress = "http://www.accuweather.com/ko/kr/pyeongchon-dong/2041963/current-weather/2041963";
         loadHtml(1);
+        loadHtml(2);
+        loadHtml(3);
+        loadHtml(4);
 
         lunch_load();
     }
@@ -209,8 +232,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.btn_lunch:
-                urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+"201703"+"&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
-
                 loadHtml(0);
                 alert.setTitle("오늘 급식");
                 alert.setMessage(lunch_text);
@@ -220,8 +241,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.btn_scheudle:
                 urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
                 loadHtml(3);
-                alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
-                //alert.show();
+                alert.setMessage("[월요일]\n" + schedule[0] + "\n\n[화요일]\n" + schedule[1] + "\n\n[수요일]\n" + schedule[2] + "\n\n[목요일]\n" + schedule[3] + "\n\n[금요일]\n" + schedule[4]);
+                alert.show();
                 break;
 
             case R.id.btn_calendar:
@@ -234,13 +255,13 @@ public class MainActivity extends AppCompatActivity
     {
         SharedPreferences lunch  = getSharedPreferences("HAEYUM", 0);
 
-        int max_lunch = lunch.getInt("lunch_max201703", 0);
+        int max_lunch = lunch.getInt("lunch_max" + year + monthC, 0);
 
         String temp = "";
 
         for(int i=1; i<=max_lunch; i++)
         {
-            lunch_month[i] = lunch.getString("lunch_201703m" + i + "d",null);
+            lunch_month[i] = lunch.getString("lunch_" + year + monthC + "m" + i + "d",null);
 
             temp += "[" + i + "일 급식]\n" + lunch_month[i] + "\n";
         }
@@ -267,8 +288,27 @@ public class MainActivity extends AppCompatActivity
                 final StringBuffer sb = new StringBuffer();
 
                 try {
+                    switch(menu)
+                    {
+                        case 0:
+                            urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+ year + monthC + "&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
+                            break;
+                        case 1:
+                            urlAddress = "http://www.accuweather.com/ko/kr/pyeongchon-dong/2041963/current-weather/2041963";
+                            break;
+                        case 2:
+                            urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+ year + monthC + "&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
+                            break;
+                        case 3:
+                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
+                            break;
+                        case 4:
+                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Calendar.ini";
+                            break;
+                    }
+
                     URL url = new URL(urlAddress);
-                    HttpURLConnection conn =
+                    final HttpURLConnection conn =
                             (HttpURLConnection)url.openConnection();// 접속
                     if (conn != null) {
                         conn.setConnectTimeout(2000);
@@ -303,7 +343,9 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
 
-                            int pos1, pos2;
+                            int pos1, pos2, i;
+
+                            String ver, tmp;
 
                             switch (menu)
                             {
@@ -318,14 +360,14 @@ public class MainActivity extends AppCompatActivity
 
                                     lunch_month[0] = lunch_month[0].substring(pos1, pos2);
 
-                                    for(int i=34; ; i--)
+                                    for(i=34; ; i--)
                                         if(lunch_month[0].indexOf("<div>" + i) != -1)
                                         {
                                             max_lunch = i;
                                             break;
                                         }
 
-                                    for(int i=1; i <= max_lunch; i++)
+                                    for(i=1; i <= max_lunch; i++)
                                     {
                                         pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
                                         pos2 = lunch_month[0].indexOf("알레르기") + 4;
@@ -345,7 +387,7 @@ public class MainActivity extends AppCompatActivity
                                     editor.putInt("lunch_max201703",max_lunch);
                                     editor.commit();
 
-                                    for(int i=1; i <= max_lunch; i++)
+                                    for(i=1; i <= max_lunch; i++)
                                     {
                                         temp += "[" + i + "일]";
                                         lunch_month[i] = lunch_month[i].replace("<div>" + i,"");
@@ -390,15 +432,12 @@ public class MainActivity extends AppCompatActivity
                                     //alert.show();
 
                                     btn_weather.setText("TODAY WEATHER\n\n" + weather_text);
-
-                                    urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+"201703"+"&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
-                                    loadHtml(2);
                                     break;
 
                                 case 2:
                                     lunch_text = web_text;
 
-                                    pos1 = lunch_text.indexOf("<div>" + 10 + "<") + 13;
+                                    pos1 = lunch_text.indexOf("<div>" + day + "<") + 13;
                                     pos2 = lunch_text.indexOf("알레르기");
 
                                     lunch_text = lunch_text.substring(pos1, pos2);
@@ -433,25 +472,22 @@ public class MainActivity extends AppCompatActivity
                                         alert.setMessage(lunch_text);
                                         //alert.show();
                                     }
-                                    urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
-                                    loadHtml(3);
                                     break;
 
                                 case 3:
                                     //시간표
+                                    schedule_text = web_text;
+
                                     SharedPreferences spSchedule = getSharedPreferences("Schedule", 0);
-                                    SharedPreferences.Editor spEditor = spSchedule.edit();
+                                    SharedPreferences.Editor speSchedule = spSchedule.edit();
 
-                                    scheduleVersion = spSchedule.getString("Version", null);
-
-                                    String tmp;
-                                    int i;
+                                    scheduleVersion = spSchedule.getString("Version", "20000330");
 
                                     pos1 = schedule_text.indexOf("=");
                                     pos2 = schedule_text.indexOf(";");
-                                    tmp = schedule_text.substring(pos1 + 1, pos2);
+                                    ver = schedule_text.substring(pos1 + 1, pos2);
 
-                                    if(tmp != scheduleVersion)
+                                    if(!scheduleVersion.equals(ver))
                                     {
                                         StringBuffer sb;
 
@@ -536,21 +572,84 @@ public class MainActivity extends AppCompatActivity
                                         }
                                         schedule[4] = sb.toString();
 
-                                        btn_schedule.setText("Today Schedule\n\n" + schedule[4]);
+                                        btn_schedule.setText("Today Schedule\n\n" + schedule[1]);
                                         //alert.setMessage(schedule_text);
                                         //alert.setMessage(String.valueOf(pos1));
-                                        //alert.setMessage(tmp);
+                                        //alert.setMessage(ver);
                                         //alert.setMessage(schedule[4]);
                                         //alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
                                         //alert.show();
 
-                                        spEditor.putString("Version", tmp);
-                                        spEditor.putString("Monday", schedule[0]);
-                                        spEditor.putString("Tuesday", schedule[1]);
-                                        spEditor.putString("Wednesday", schedule[2]);
-                                        spEditor.putString("Thursday", schedule[3]);
-                                        spEditor.putString("Friday", schedule[4]);
-                                        spEditor.commit();
+                                        speSchedule.putString("Version", ver);
+                                        speSchedule.putString("Monday", schedule[0]);
+                                        speSchedule.putString("Tuesday", schedule[1]);
+                                        speSchedule.putString("Wednesday", schedule[2]);
+                                        speSchedule.putString("Thursday", schedule[3]);
+                                        speSchedule.putString("Friday", schedule[4]);
+                                        speSchedule.commit();
+
+                                        alert.setTitle("시간표 업데이트");
+                                        alert.setMessage("시간표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
+                                        alert.show();
+                                    }
+                                    else
+                                    {
+                                        schedule[0] = spSchedule.getString("Monday", null);
+                                        schedule[1] = spSchedule.getString("Tuesday", null);
+                                        schedule[2] = spSchedule.getString("Wednesday", null);
+                                        schedule[3] = spSchedule.getString("Thursday", null);
+                                        schedule[4] = spSchedule.getString("Friday", null);
+
+                                        //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
+
+                                        if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                                            btn_schedule.setText("Today Schedule\n\n행복한 주말");
+                                        else
+                                            btn_schedule.setText(schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
+                                    }
+                                    break;
+
+                                case 4:
+                                    calendar_text = web_text;
+
+                                    SharedPreferences spCalendar = getSharedPreferences("Calendar", 0);
+                                    SharedPreferences.Editor speCalendar = spCalendar.edit();
+
+                                    calendarVersion = spCalendar.getString("Version", "20000330");
+
+                                    pos1 = calendar_text.indexOf("=");
+                                    pos2 = calendar_text.indexOf(";");
+                                    ver = calendar_text.substring(pos1 + 1, pos2);
+
+                                    if(!calendarVersion.equals(ver))
+                                    {
+                                        calendar_text = calendar_text.substring(pos1, calendar_text.length());
+
+                                        for(i=2; i<3; i++) {
+                                            if(i < 10) {
+                                                pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 7; //201703
+                                                pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
+                                            }
+
+                                            onAlert("", pos1 + " / " + pos2);
+                                            onAlert("", calendar_text);
+                                            tmp = calendar_text.substring(pos1 ,pos2);
+                                            onAlert("", tmp);
+
+                                            for(int j=0; j<5; j++) {
+                                                pos1 = tmp.indexOf(j) + 2;
+                                                pos2 = tmp.indexOf(";");
+
+                                                if(pos1 != -1) {
+                                                    calendar[i][j] = tmp.substring(pos1, pos2);
+                                                    tmp = tmp.substring(pos2 + 1, tmp.length());
+
+                                                    Log.d(i + "월" + j + "일 : ", calendar[i][j]);
+                                                }
+                                            }
+                                        }
+
+                                        //onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
                                     }
                                     break;
                             }
@@ -564,4 +663,18 @@ public class MainActivity extends AppCompatActivity
         t.start(); // 쓰레드 시작
     }
 
+    private void onAlert(String title, String msg)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();     //닫기
+            }
+        });
+
+        alert.setTitle(title);
+        alert.setMessage(msg);
+        alert.show();
+    }
 }

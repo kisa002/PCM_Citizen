@@ -44,7 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 infoGrade = position;
-                infoCode = String.valueOf(infoGrade) + String.valueOf(infoClass);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -58,10 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 infoClass = position;
-                if(infoClass < 10)
-                    infoCode = String.valueOf(infoGrade) + "0" + String.valueOf(infoClass);
-                else
-                    infoCode = String.valueOf(infoGrade) + String.valueOf(infoClass);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -99,6 +94,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        if(infoClass < 10)
+                                                infoCode = infoGrade + "0" + infoClass;
+                                            else
+                                                infoCode = infoGrade + String.valueOf(infoClass);
+
                                         SharedPreferences user = getSharedPreferences("User", 0);
                                         SharedPreferences.Editor edit = user.edit();
 
