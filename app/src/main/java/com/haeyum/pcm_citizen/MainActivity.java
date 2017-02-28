@@ -133,10 +133,11 @@ public class MainActivity extends AppCompatActivity
         btn_calendar = (Button)findViewById(R.id.btn_calendar);
 
         //데이터 파싱
+        loadHtml(0);
         loadHtml(1);
-        loadHtml(2);
         loadHtml(3);
         loadHtml(4);
+        loadHtml(5);
 
         lunch_load();
     }
@@ -189,21 +190,30 @@ public class MainActivity extends AppCompatActivity
         switch(item.getItemId())
         {
             case R.id.nav_schedule:
+                loadHtml(3);
+                alert.setTitle("이번주 시간표");
+                alert.setMessage("[월요일]\n" + schedule[0] + "\n\n[화요일]\n" + schedule[1] + "\n\n[수요일]\n" + schedule[2] + "\n\n[목요일]\n" + schedule[3] + "\n\n[금요일]\n" + schedule[4]);
+                alert.show();
                 break;
 
             case R.id.nav_lunch:
+                loadHtml(0);
                 alert.setTitle("오늘 급식");
                 alert.setMessage(lunch_text);
                 //alert.show();
                 break;
 
             case R.id.nav_calendar:
+                loadHtml(4);
+                onAlert("올해 일정", "[1월 일정]\n" + calendar[1] + "\n\n[2월 일정]\n" + calendar[2] + "\n\n[3월 일정]\n" + calendar[3] + "\n\n[3월 일정]\n" + calendar[4] + "\n\n[5월 일정]\n" + calendar[5] + "\n\n[6월 일정]\n" + calendar[6] + "\n\n[7월 일정]\n" + calendar[7] + "\n\n[8월 일정]\n" + calendar[8] + "\n\n[9월 일정]\n" + calendar[9] + "\n\n[10월 일정]\n" + calendar[10] + "\n\n[11월 일정]\n" + calendar[11] + "\n\n[12월 일정\n" + calendar[12]);
                 break;
 
             case R.id.nav_notice:
+                loadHtml(5);
                 break;
 
             case R.id.nav_quit:
+                finish();
                 break;
         }
 
@@ -235,13 +245,15 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.btn_lunch:
                 loadHtml(0);
-                alert.setTitle("오늘 급식");
-                alert.setMessage(lunch_text);
+                onAlert("오늘 급식", lunch_text);
+                //alert.setTitle("오늘 급식");
+                //alert.setMessage(lunch_text);
                 //alert.show();
                 break;
 
             case R.id.btn_scheudle:
                 loadHtml(3);
+                alert.setTitle("이번주 시간표");
                 alert.setMessage("[월요일]\n" + schedule[0] + "\n\n[화요일]\n" + schedule[1] + "\n\n[수요일]\n" + schedule[2] + "\n\n[목요일]\n" + schedule[3] + "\n\n[금요일]\n" + schedule[4]);
                 alert.show();
                 break;
@@ -307,6 +319,9 @@ public class MainActivity extends AppCompatActivity
                         case 4:
                             urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Calendar.ini";
                             break;
+                        case 5:
+                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Notice.ini";
+                            break;
                     }
 
                     URL url = new URL(urlAddress);
@@ -349,6 +364,9 @@ public class MainActivity extends AppCompatActivity
 
                             String ver, tmp, tmp2, temp = "";
 
+                            SharedPreferences spLunch = getSharedPreferences("HAEYUM", 0);
+                            SharedPreferences.Editor speLunch = spLunch.edit();
+
                             switch (menu)
                             {
 
@@ -357,60 +375,64 @@ public class MainActivity extends AppCompatActivity
 
                                     int max_lunch;
 
-                                    pos1 = lunch_month[0].indexOf("<tbody>") + 7;
-                                    pos2 = lunch_month[0].indexOf("알레르기") + 4;
-
-                                    lunch_month[0] = lunch_month[0].substring(pos1, pos2);
-
-                                    for(i=34; ; i--)
-                                        if(lunch_month[0].indexOf("<div>" + i) != -1)
-                                        {
-                                            max_lunch = i;
-                                            break;
-                                        }
-
-                                    for(i=1; i <= max_lunch; i++)
-                                    {
-                                        pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
+                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) == 0) {
+                                        pos1 = lunch_month[0].indexOf("<tbody>") + 7;
                                         pos2 = lunch_month[0].indexOf("알레르기") + 4;
+
                                         lunch_month[0] = lunch_month[0].substring(pos1, pos2);
 
-                                        pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i));
-                                        pos2 = lunch_month[0].indexOf("</td>");
+                                        for (i = 34; ; i--)
+                                            if (lunch_month[0].indexOf("<div>" + i) != -1) {
+                                                max_lunch = i;
+                                                break;
+                                            }
 
-                                        lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
+                                        for (i = 1; i <= max_lunch; i++) {
+                                            pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
+                                            pos2 = lunch_month[0].indexOf("알레르기") + 4;
+                                            lunch_month[0] = lunch_month[0].substring(pos1, pos2);
+
+                                            pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i));
+                                            pos2 = lunch_month[0].indexOf("</td>");
+
+                                            lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
+                                        }
+
+                                        speLunch.putInt("lunch_max" + year + monthC, max_lunch);
+                                        speLunch.commit();
+
+                                        for (i = 1; i <= max_lunch; i++) {
+                                            temp += "[" + i + "일]";
+                                            lunch_month[i] = lunch_month[i].replace("<div>" + i, "");
+                                            lunch_month[i] = lunch_month[i].replace("</div>", "");
+                                            lunch_month[i] = lunch_month[i].replace("<br />", "\n");
+                                            lunch_month[i] = lunch_month[i].replace("</td>", "");
+
+                                            if (lunch_month[i].indexOf("중식") == -1)
+                                                lunch_month[i] = "\n급식이 없습니다.\n";
+                                            else
+                                                lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
+
+                                            lunch_month[i] = lunch_month[i].replace("[중식]", "");
+
+                                            temp += lunch_month[i] + "\n";
+
+                                            speLunch.putString("lunch_" + year + monthC + "m" + i + "d", lunch_month[i]); //lunch_10m3d
+                                            speLunch.commit();
+                                        }
+
+                                        btn_lunch.setText(spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                    }
+                                    else {
+                                        max_lunch = spLunch.getInt("lucnh_max" + year + monthC, 0);
+                                        btn_lunch.setText(spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                     }
 
-                                    SharedPreferences lunch = getSharedPreferences("HAEYUM", 0);
-                                    SharedPreferences.Editor editor = lunch.edit();
-
-                                    editor.putInt("lunch_max201703",max_lunch);
-                                    editor.commit();
-
-                                    for(i=1; i <= max_lunch; i++)
-                                    {
-                                        temp += "[" + i + "일]";
-                                        lunch_month[i] = lunch_month[i].replace("<div>" + i,"");
-                                        lunch_month[i] = lunch_month[i].replace("</div>","");
-                                        lunch_month[i] = lunch_month[i].replace("<br />","\n");
-                                        lunch_month[i] = lunch_month[i].replace("</td>","");
-
-                                        if(lunch_month[i].indexOf("중식") == -1)
-                                            lunch_month[i] = "\n급식이 없습니다.\n";
-                                        else
-                                            lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
-
-                                        lunch_month[i] = lunch_month[i].replace("[중식]","");
-
-                                        temp += lunch_month[i] + "\n";
-
-                                        editor.putString("lunch_201703m"  + i + "d", lunch_month[i]); //lunch_10m3d
-                                        editor.commit();
+                                    lunch_text = "";
+                                    for(i=1; i<=max_lunch; i++) {
+                                        lunch_text += spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001");
                                     }
-
-                                    alert.setTitle("이번달 급식");
-                                    alert.setMessage(temp);
-                                    alert.show();
+                                    onAlert("", lunch_text);
 
                                     break;
 
@@ -670,6 +692,10 @@ public class MainActivity extends AppCompatActivity
 
                                         btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
                                     }
+                                    break;
+
+                                case 5:
+                                    onAlert("공지사항", web_text);
                                     break;
                             }
                         }
