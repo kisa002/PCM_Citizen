@@ -15,6 +15,9 @@
             android:id="@+id/nav_notice"
             android:title="공지사항" />
         <item
+            android:id="@+id/nav_setting"
+            android:title="설정" />
+        <item
             android:id="@+id/nav_quit"
             android:title="종료" />
     </group>

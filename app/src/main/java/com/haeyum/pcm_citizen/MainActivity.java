@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.btn_calendar:
                 loadHtml(4);
-                onAlert("올해 일정", calendar[1] + "\n\n" + calendar[2] + "\n\n" + calendar[3] + "\n\n" + calendar[4] + "\n\n" + calendar[5] + "\n\n" + calendar[6] + "\n\n" + calendar[7] + "\n\n" + calendar[8] + "\n\n" + calendar[9] + "\n\n" + calendar[10] + "\n\n" + calendar[11] + "\n\n" + calendar[12]);
+                onAlert("올해 일정", "[1월 일정]\n" + calendar[1] + "\n\n[2월 일정]\n" + calendar[2] + "\n\n[3월 일정]\n" + calendar[3] + "\n\n[3월 일정]\n" + calendar[4] + "\n\n[5월 일정]\n" + calendar[5] + "\n\n[6월 일정]\n" + calendar[6] + "\n\n[7월 일정]\n" + calendar[7] + "\n\n[8월 일정]\n" + calendar[8] + "\n\n[9월 일정]\n" + calendar[9] + "\n\n[10월 일정]\n" + calendar[10] + "\n\n[11월 일정]\n" + calendar[11] + "\n\n[12월 일정\n" + calendar[12]);
                 break;
         }
     }
@@ -628,6 +628,8 @@ public class MainActivity extends AppCompatActivity
                                         calendar_text = calendar_text.substring(pos1, calendar_text.length());
 
                                         for(i=1; i<=12; i++) {
+                                            calendar[i] = "일정이 없습니다.";
+
                                             if(i < 10) {
                                                 pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 9; //201703
                                                 pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
@@ -640,18 +642,33 @@ public class MainActivity extends AppCompatActivity
                                             //onAlert("", pos1 + " / " + pos2);
 
                                             if(pos1 != -1) {
-                                                tmp = calendar_text.substring(pos1, pos2);
-                                                tmp = tmp.replace("=", "일 : ");
+                                                calendar[i] = calendar_text.substring(pos1, pos2);
+                                                calendar[i] = calendar[i].replaceAll("=", " : ");
+                                                calendar[i] = calendar[i].replaceAll("월", "월 ");
 
-                                                calendar[i] = i + "월 일정표\n\n" + tmp;
-                                                calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
-                                                //Log.d("", calendar[i]);
+                                                if(calendar[i].length() > 0)
+                                                    calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
+                                                //else
+                                                    //onAlert("", String.valueOf(i));
                                             }
+
+                                            //Log.d("i : " + i, calendar[i]);
                                         }
 
-                                        btn_calendar.setText(calendar[month]);
+                                        btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
 
-                                        //onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
+                                        for(i=1; i<13; i++)
+                                            speCalendar.putString("Calendar[" + i + "]", calendar[i]);
+                                        speCalendar.putString("Version", ver);
+                                        speCalendar.commit();
+
+                                        onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
+                                    }
+                                    else {
+                                        for (i = 1; i < 13; i++)
+                                            calendar[i] = spCalendar.getString("Calendar[" + i + "]", "ERROR");
+
+                                        btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
                                     }
                                     break;
                             }
