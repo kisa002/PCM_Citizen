@@ -212,6 +212,11 @@ public class MainActivity extends AppCompatActivity
                 loadHtml(5);
                 break;
 
+            case R.id.nav_setting:
+                Intent set = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(set);
+                break;
+
             case R.id.nav_quit:
                 finish();
                 break;
@@ -245,7 +250,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.btn_lunch:
                 loadHtml(0);
-                onAlert("오늘 급식", lunch_text);
+                onAlert("이번달 급식", lunch_text);
                 //alert.setTitle("오늘 급식");
                 //alert.setMessage(lunch_text);
                 //alert.show();
@@ -277,7 +282,7 @@ public class MainActivity extends AppCompatActivity
         {
             lunch_month[i] = lunch.getString("lunch_" + year + monthC + "m" + i + "d",null);
 
-            temp += "[" + i + "일 급식]\n" + lunch_month[i] + "\n";
+            temp += "[" + i + "일 급식]" + lunch_month[i] + "\n";
         }
 
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
@@ -314,13 +319,13 @@ public class MainActivity extends AppCompatActivity
                             urlAddress = "http://stu.goe.go.kr/sts_sci_md00_001.do?domainCode=J10&schYm="+ year + monthC + "&schulCode=J100000836&schulCrseScCode=4&schulKndScCode=04";
                             break;
                         case 3:
-                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Schedule.ini";
+                            urlAddress = "http://haeyum.com/PCM_Citizen/DataBase/Schedule.ini";
                             break;
                         case 4:
-                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Calendar.ini";
+                            urlAddress = "http://haeyum.com/PCM_Citizen/DataBase/Calendar.ini";
                             break;
                         case 5:
-                            urlAddress = "http://multicore.dothome.co.kr/PCM_Citizen/DataBase/Notice.ini";
+                            urlAddress = "http://haeyum.com/PCM_Citizen/DataBase/Notice.ini";
                             break;
                     }
 
@@ -375,7 +380,7 @@ public class MainActivity extends AppCompatActivity
 
                                     int max_lunch;
 
-                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) == 0) {
+                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) != 0) {
                                         pos1 = lunch_month[0].indexOf("<tbody>") + 7;
                                         pos2 = lunch_month[0].indexOf("알레르기") + 4;
 
@@ -414,25 +419,29 @@ public class MainActivity extends AppCompatActivity
                                                 lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
 
                                             lunch_month[i] = lunch_month[i].replace("[중식]", "");
+                                            lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length() - 1);
 
                                             temp += lunch_month[i] + "\n";
 
                                             speLunch.putString("lunch_" + year + monthC + "m" + i + "d", lunch_month[i]); //lunch_10m3d
                                             speLunch.commit();
+
+                                            //Log.d("" + i, lunch_month[i]);
                                         }
 
-                                        btn_lunch.setText(spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                        btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                     }
                                     else {
-                                        max_lunch = spLunch.getInt("lucnh_max" + year + monthC, 0);
-                                        btn_lunch.setText(spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                        btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                     }
 
                                     lunch_text = "";
+                                    max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
+
                                     for(i=1; i<=max_lunch; i++) {
-                                        lunch_text += spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001");
+                                        lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W001") + "\n\n";
                                     }
-                                    onAlert("", lunch_text);
+                                    //onAlert("", lunch_text);
 
                                     break;
 
@@ -663,7 +672,7 @@ public class MainActivity extends AppCompatActivity
 
                                             //onAlert("", pos1 + " / " + pos2);
 
-                                            if(pos1 != -1) {
+                                            if(pos1 >= 1) {
                                                 calendar[i] = calendar_text.substring(pos1, pos2);
                                                 calendar[i] = calendar[i].replaceAll("=", " : ");
                                                 calendar[i] = calendar[i].replaceAll("월", "월 ");
