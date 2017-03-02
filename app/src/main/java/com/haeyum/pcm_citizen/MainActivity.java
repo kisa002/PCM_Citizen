@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_setting:
-                Intent set = new Intent(getApplicationContext(), SettingsActivity.class);
+                Intent set = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(set);
                 break;
 
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity
 
                                     int max_lunch;
 
-                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) != 0) {
+                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) == 0) {
                                         pos1 = lunch_month[0].indexOf("<tbody>") + 7;
                                         pos2 = lunch_month[0].indexOf("알레르기") + 4;
 
@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity
                                             //Log.d("" + i, lunch_month[i]);
                                         }
 
-                                        btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                        btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
                                     }
                                     else {
                                         btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity
                                     max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
 
                                     for(i=1; i<=max_lunch; i++) {
-                                        lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W001") + "\n\n";
+                                        lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
                                     }
                                     //onAlert("", lunch_text);
 

@@ -12,13 +12,12 @@
     <!-- Example General settings -->
     <string name="pref_header_general">일반</string>
 
-    <string name="pref_title_social_recommendations">자동 업데이트</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+    <string name="pref_title_auto_update">자동 업데이트</string>
+    <string name="pref_description_auto_update">급식과 일정데이터 등을 자동으로 업데이트합니다.
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_display_name">개발자 정보</string>
+    <string name="pref_default_display_name">유광무</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">

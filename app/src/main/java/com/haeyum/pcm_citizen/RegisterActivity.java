@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                 infoName = et.getText().toString();
 
                 if(infoName != "")
-                    if(infoGrade != 0 && infoClass != 0 && infoNumber != 0) {
+                    if(infoGrade != 0 && infoClass != 0 && infoNumber != 0 && infoName != "") {
                         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(RegisterActivity.this);
                         alert_confirm.setTitle("학생 정보 확인");
                         alert_confirm.setMessage(String.valueOf(infoGrade) + "학년 " + String.valueOf(infoClass) + "반 " + String.valueOf(infoNumber) + "번 " + infoName + "\n위의 내용으로 학생 정보를 저장합니다.").setCancelable(false).setPositiveButton("정보 저장",
