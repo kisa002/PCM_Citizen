@@ -10,11 +10,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingActivity extends AppCompatActivity {
 
     private CheckBox cbAutoUpdate;
     private CheckBox cbNotice;
+
+    //Data Read Write
+    SharedPreferences spUser = getSharedPreferences("User", 0);
+    SharedPreferences spHAEYUM = getSharedPreferences("HAEYUM", 0);
+    SharedPreferences spVersion = getSharedPreferences("Version", 0);
+    SharedPreferences spSchedule = getSharedPreferences("Schedule", 0);
+    SharedPreferences spCalendar = getSharedPreferences("Calendar", 0);
+    SharedPreferences spSetting = getSharedPreferences("Setting", 0);
+    SharedPreferences.Editor speUser = spUser.edit();
+    SharedPreferences.Editor speHAEYUM = spHAEYUM.edit();
+    SharedPreferences.Editor speVersion = spVersion.edit();
+    SharedPreferences.Editor speSchedule = spSchedule.edit();
+    SharedPreferences.Editor speCalendar = spCalendar.edit();
+    SharedPreferences.Editor speSetting = spSetting.edit();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +38,17 @@ public class SettingActivity extends AppCompatActivity {
 
         cbAutoUpdate = (CheckBox)findViewById(R.id.setting_auto_update);
         cbNotice = (CheckBox)findViewById(R.id.setting_notice);
+
+        if(spSetting.getBoolean("notice", false))
+           cbNotice.setChecked(true);
+        else
+            cbNotice.setChecked(false);
+
+        if(spSetting.getBoolean("autoUpdate", false))
+            cbAutoUpdate.setChecked(true);
+        else
+            cbAutoUpdate.setChecked(false);
+
     }
 
     public void onClick(View v)
@@ -30,19 +56,26 @@ public class SettingActivity extends AppCompatActivity {
         switch(v.getId())
         {
             case R.id.btn_report:
+                Toast.makeText(this, "FUCK", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_reset:
-                SharedPreferences spUser = getSharedPreferences("User", 0);
-                SharedPreferences.Editor speUser = spUser.edit();
-
                 speUser.clear();
                 speUser.commit();
+                speHAEYUM.clear();
+                speHAEYUM.commit();
+                speVersion.clear();
+                speVersion.commit();
+                speSchedule.clear();
+                speSchedule.commit();
+                speCalendar.clear();
+                speCalendar.commit();
 
                 onAlert("학생정보 초기화 완료!", "학생정보를 모두 초기화하였습니다!\n애플리케이션을 재시작합니다");
                 break;
 
             case R.id.btn_history:
+                onAlert("업데이트 내역", "역사따윈 남기지 않습니다.");
                 break;
 
             case R.id.btn_producer:
@@ -50,6 +83,11 @@ public class SettingActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_save:
+                speSetting.putBoolean("autoUpdate", true);
+                speSetting.putBoolean("notice", true);
+                speSetting.commit();
+
+                Toast.makeText(this, "데이터를 저장하였습니다", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -66,5 +104,6 @@ public class SettingActivity extends AppCompatActivity {
 
         alert.setTitle(title);
         alert.setMessage(msg);
+        alert.show();
     }
 }
