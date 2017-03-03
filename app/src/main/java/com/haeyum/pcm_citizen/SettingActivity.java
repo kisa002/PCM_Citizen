@@ -1,6 +1,7 @@
 package com.haeyum.pcm_citizen;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.RadialGradient;
 import android.support.v4.widget.TextViewCompat;
@@ -18,18 +19,18 @@ public class SettingActivity extends AppCompatActivity {
     private CheckBox cbNotice;
 
     //Data Read Write
-    SharedPreferences spUser = getSharedPreferences("User", 0);
-    SharedPreferences spHAEYUM = getSharedPreferences("HAEYUM", 0);
-    SharedPreferences spVersion = getSharedPreferences("Version", 0);
-    SharedPreferences spSchedule = getSharedPreferences("Schedule", 0);
-    SharedPreferences spCalendar = getSharedPreferences("Calendar", 0);
-    SharedPreferences spSetting = getSharedPreferences("Setting", 0);
-    SharedPreferences.Editor speUser = spUser.edit();
-    SharedPreferences.Editor speHAEYUM = spHAEYUM.edit();
-    SharedPreferences.Editor speVersion = spVersion.edit();
-    SharedPreferences.Editor speSchedule = spSchedule.edit();
-    SharedPreferences.Editor speCalendar = spCalendar.edit();
-    SharedPreferences.Editor speSetting = spSetting.edit();
+    SharedPreferences spUser;
+    SharedPreferences spHAEYUM;
+    SharedPreferences spVersion;
+    SharedPreferences spSchedule;
+    SharedPreferences spCalendar;
+    SharedPreferences spSetting;
+    SharedPreferences.Editor speUser;
+    SharedPreferences.Editor speHAEYUM;
+    SharedPreferences.Editor speVersion;
+    SharedPreferences.Editor speSchedule;
+    SharedPreferences.Editor speCalendar;
+    SharedPreferences.Editor speSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +40,25 @@ public class SettingActivity extends AppCompatActivity {
         cbAutoUpdate = (CheckBox)findViewById(R.id.setting_auto_update);
         cbNotice = (CheckBox)findViewById(R.id.setting_notice);
 
-        if(spSetting.getBoolean("notice", false))
+        spUser = getSharedPreferences("User", 0);
+        spHAEYUM = getSharedPreferences("HAEYUM", 0);
+        spVersion = getSharedPreferences("Version", 0);
+        spSchedule = getSharedPreferences("Schedule", 0);
+        spCalendar = getSharedPreferences("Calendar", 0);
+        spSetting = getSharedPreferences("Setting", 0);
+        speUser = spUser.edit();
+        speHAEYUM = spHAEYUM.edit();
+        speVersion = spVersion.edit();
+        speSchedule = spSchedule.edit();
+        speCalendar = spCalendar.edit();
+        speSetting = spSetting.edit();
+
+        if(spSetting.getBoolean("notice", true))
            cbNotice.setChecked(true);
         else
             cbNotice.setChecked(false);
 
-        if(spSetting.getBoolean("autoUpdate", false))
+        if(spSetting.getBoolean("autoUpdate", true))
             cbAutoUpdate.setChecked(true);
         else
             cbAutoUpdate.setChecked(false);
@@ -55,27 +69,57 @@ public class SettingActivity extends AppCompatActivity {
     {
         switch(v.getId())
         {
+            case R.id.setting_auto_update:
+                if(cbAutoUpdate.isChecked() == false)
+                    onAlert("경고", "자동 업데이트 해제시, 최신 급식 정보와 일정표를 저장할 수 없습니다.\n또한 네트워크가 연결된 상태에서만 급식과 일정표를 확인할 수 있게됩니다\n\n(자동업데이트 기능이 소모하는 데이터 양은 1회당 1mb도 안됩니다.)");
+                break;
+
+            case R.id.setting_notice:
+                if(cbNotice.isChecked() == false)
+                    onAlert("경고", "공지사항 해제시, 긴급 공지 또는 단축 시간과 같은 정보를 확인할 수 없게됩니다");
+                break;
+
             case R.id.btn_report:
-                Toast.makeText(this, "FUCK", Toast.LENGTH_SHORT).show();
+                onAlert("오류 제보","오타나 버그가 있을 경우 010-6348-1143으로 문자주시면 신속하게 해결해드리겠습니다\n\nex) 1학년 7반인데 일정표가 잘못나왔습니다");
                 break;
 
             case R.id.btn_reset:
-                speUser.clear();
-                speUser.commit();
-                speHAEYUM.clear();
-                speHAEYUM.commit();
-                speVersion.clear();
-                speVersion.commit();
-                speSchedule.clear();
-                speSchedule.commit();
-                speCalendar.clear();
-                speCalendar.commit();
+                AlertDialog.Builder alert_confirm = new AlertDialog.Builder(SettingActivity.this);
+                alert_confirm.setMessage("학생정보를 초기화하시겠습니까?\n\n초기화후 학생 정보를 새로 가입하셔야 합니다").setCancelable(false).setPositiveButton("확인",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                speUser.clear();
+                                speUser.commit();
+                                speHAEYUM.clear();
+                                speHAEYUM.commit();
+                                speVersion.clear();
+                                speVersion.commit();
+                                speSchedule.clear();
+                                speSchedule.commit();
+                                speCalendar.clear();
+                                speCalendar.commit();
+                                speSetting.clear();
+                                speSetting.commit();
 
-                onAlert("학생정보 초기화 완료!", "학생정보를 모두 초기화하였습니다!\n애플리케이션을 재시작합니다");
+                                onAlert("학생정보 초기화 완료!", "학생정보를 모두 초기화하였습니다!\n애플리케이션을 재시작합니다");
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+                            }
+                        }).setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 'No'
+                                return;
+                            }
+                        });
+                AlertDialog alert = alert_confirm.create();
+                alert.show();
                 break;
 
             case R.id.btn_history:
-                onAlert("업데이트 내역", "역사따윈 남기지 않습니다.");
+                onAlert("업데이트 내역", "2017.02.26 이전 데이터 복구\n2017.02.27 학생등록 추가\n2016.02.28 시간표 알고리즘 변경\n2016.03.01 일정표 알고리즘 변경\n2016.03.02 급식 오류 수정 및 알고리즘 변경\n2016.03.04 설정 기능 추가");
                 break;
 
             case R.id.btn_producer:
@@ -83,11 +127,11 @@ public class SettingActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_save:
-                speSetting.putBoolean("autoUpdate", true);
-                speSetting.putBoolean("notice", true);
+                speSetting.putBoolean("autoUpdate", cbAutoUpdate.isChecked());
+                speSetting.putBoolean("notice", cbNotice.isChecked());
                 speSetting.commit();
 
-                Toast.makeText(this, "데이터를 저장하였습니다", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "설정 내역을 저장하였습니다", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

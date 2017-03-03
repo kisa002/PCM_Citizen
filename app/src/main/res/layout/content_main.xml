@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#25AAFF"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.haeyum.pcm_citizen.MainActivity"
     tools:showIn="@layout/app_bar_main">
@@ -66,7 +67,7 @@
 
             <Button
                 android:background="@drawable/round"
-                android:text="TODAY CALENDAR\n\n소방 훈련\n5교시 단축"
+                android:text="TODAY CALENDAR\n\nServer Connecting..."
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="23dp"

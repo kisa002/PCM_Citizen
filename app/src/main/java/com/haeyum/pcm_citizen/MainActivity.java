@@ -1,5 +1,6 @@
 package com.haeyum.pcm_citizen;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,6 +51,18 @@ public class MainActivity extends AppCompatActivity
     private Button btn_lunch;
     private Button btn_schedule;
     private Button btn_calendar;
+
+    //네트워크 연결 확인
+    boolean isNetwork = false;
+
+    //DB
+    SharedPreferences spLunch;
+    SharedPreferences.Editor speLunch;
+    SharedPreferences lunch;
+    SharedPreferences spSchedule;
+    SharedPreferences.Editor speSchedule;
+    SharedPreferences spCalendar;
+    SharedPreferences.Editor speCalendar;
 
     //학생 정보
     String infoName, infoCode;
@@ -132,14 +147,68 @@ public class MainActivity extends AppCompatActivity
         btn_schedule = (Button)findViewById(R.id.btn_scheudle);
         btn_calendar = (Button)findViewById(R.id.btn_calendar);
 
-        //데이터 파싱
-        loadHtml(0);
-        loadHtml(1);
-        loadHtml(3);
-        loadHtml(4);
-        loadHtml(5);
+        //DB
+        spLunch = getSharedPreferences("HAEYUM", 0);
+        speLunch = spLunch.edit();
+        lunch  = getSharedPreferences("HAEYUM", 0);
+        spSchedule = getSharedPreferences("Schedule", 0);
+        speSchedule = spSchedule.edit();
+        spCalendar = getSharedPreferences("Calendar", 0);
+        speCalendar = spCalendar.edit();
 
-        lunch_load();
+        //네트워크 연결 확인
+        ConnectivityManager cManager;
+        NetworkInfo mobile;
+        NetworkInfo wifi;
+
+        cManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        mobile = cManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        wifi = cManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        if(mobile.isConnected() || wifi.isConnected())
+            isNetwork = true;
+        else
+            isNetwork = false;
+
+        //네트워크 처리 -> 위에다가 써도 되지만 그냥 여기다가 쓰자
+        if(isNetwork)
+        {
+            //데이터 파싱
+            loadHtml(0);
+            loadHtml(1);
+            loadHtml(3);
+            loadHtml(4);
+            loadHtml(5);
+
+            lunch_load();
+        }
+        else
+        {
+            //날씨
+            btn_weather.setText("Today Weather\n\n네트워크를 연결해주세요.\n연결이 되어야 날씨 확인이 가능합니다");
+
+            //급식
+            btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+            lunch_load();
+
+            //시간표
+            schedule[0] = spSchedule.getString("Monday", null);
+            schedule[1] = spSchedule.getString("Tuesday", null);
+            schedule[2] = spSchedule.getString("Wednesday", null);
+            schedule[3] = spSchedule.getString("Thursday", null);
+            schedule[4] = spSchedule.getString("Friday", null);
+
+            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                btn_schedule.setText("Today Schedule\n\n행복한 주말");
+            else
+                btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
+
+            //일정표
+            for (int i = 1; i < 13; i++)
+                calendar[i] = spCalendar.getString("Calendar[" + i + "]", "ERROR");
+
+            btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
+        }
     }
 
     @Override
@@ -190,26 +259,32 @@ public class MainActivity extends AppCompatActivity
         switch(item.getItemId())
         {
             case R.id.nav_schedule:
-                loadHtml(3);
+                if(isNetwork)
+                    loadHtml(3);
                 alert.setTitle("이번주 시간표");
                 alert.setMessage("[월요일]\n" + schedule[0] + "\n\n[화요일]\n" + schedule[1] + "\n\n[수요일]\n" + schedule[2] + "\n\n[목요일]\n" + schedule[3] + "\n\n[금요일]\n" + schedule[4]);
                 alert.show();
                 break;
 
             case R.id.nav_lunch:
-                loadHtml(0);
+                if(isNetwork)
+                    loadHtml(0);
                 alert.setTitle("오늘 급식");
                 alert.setMessage(lunch_text);
                 //alert.show();
                 break;
 
             case R.id.nav_calendar:
-                loadHtml(4);
+                if(isNetwork)
+                    loadHtml(4);
                 onAlert("올해 일정", "[1월 일정]\n" + calendar[1] + "\n\n[2월 일정]\n" + calendar[2] + "\n\n[3월 일정]\n" + calendar[3] + "\n\n[3월 일정]\n" + calendar[4] + "\n\n[5월 일정]\n" + calendar[5] + "\n\n[6월 일정]\n" + calendar[6] + "\n\n[7월 일정]\n" + calendar[7] + "\n\n[8월 일정]\n" + calendar[8] + "\n\n[9월 일정]\n" + calendar[9] + "\n\n[10월 일정]\n" + calendar[10] + "\n\n[11월 일정]\n" + calendar[11] + "\n\n[12월 일정\n" + calendar[12]);
                 break;
 
             case R.id.nav_notice:
-                loadHtml(5);
+                if(isNetwork)
+                    loadHtml(5);
+                else
+                    onAlert("네트워크 연결을 해주세요", "네트워크 연결이 되지않으면 확인이 불가능합니다");
                 break;
 
             case R.id.nav_setting:
@@ -251,9 +326,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.btn_lunch:
                 loadHtml(0);
                 onAlert("이번달 급식", lunch_text);
-                //alert.setTitle("오늘 급식");
-                //alert.setMessage(lunch_text);
-                //alert.show();
                 break;
 
             case R.id.btn_scheudle:
@@ -272,8 +344,11 @@ public class MainActivity extends AppCompatActivity
 
     void lunch_load()
     {
-        SharedPreferences lunch  = getSharedPreferences("HAEYUM", 0);
+        int max_lunch = lunch.getInt("lunch_max" + year + monthC, 0);
 
+        for(int i=1; i<=max_lunch; i++)
+            lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
+        /*
         int max_lunch = lunch.getInt("lunch_max" + year + monthC, 0);
 
         String temp = "";
@@ -296,7 +371,7 @@ public class MainActivity extends AppCompatActivity
         alert.setTitle("이번달 급식");
         alert.setMessage(temp);
         //alert.show();
-
+        */
 
     }
 
@@ -304,6 +379,7 @@ public class MainActivity extends AppCompatActivity
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 final StringBuffer sb = new StringBuffer();
 
                 try {
@@ -368,9 +444,6 @@ public class MainActivity extends AppCompatActivity
                             int pos1, pos2, i;
 
                             String ver, tmp, tmp2, temp = "";
-
-                            SharedPreferences spLunch = getSharedPreferences("HAEYUM", 0);
-                            SharedPreferences.Editor speLunch = spLunch.edit();
 
                             switch (menu)
                             {
@@ -509,9 +582,6 @@ public class MainActivity extends AppCompatActivity
                                     //시간표
                                     schedule_text = web_text;
 
-                                    SharedPreferences spSchedule = getSharedPreferences("Schedule", 0);
-                                    SharedPreferences.Editor speSchedule = spSchedule.edit();
-
                                     scheduleVersion = spSchedule.getString("Version", "20000330");
 
                                     pos1 = schedule_text.indexOf("=");
@@ -644,9 +714,6 @@ public class MainActivity extends AppCompatActivity
                                     calendar_text = web_text;
 
                                     StringBuffer sb2;
-
-                                    SharedPreferences spCalendar = getSharedPreferences("Calendar", 0);
-                                    SharedPreferences.Editor speCalendar = spCalendar.edit();
 
                                     calendarVersion = spCalendar.getString("Version", "20000330");
 

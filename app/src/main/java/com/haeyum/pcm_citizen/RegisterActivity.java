@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                 infoName = et.getText().toString();
 
                 if(infoName != "")
-                    if(infoGrade != 0 && infoClass != 0 && infoNumber != 0 && infoName != "") {
+                    if(infoGrade != 0 && infoClass != 0 && infoNumber != 0 && !infoName.equals("")) {
                         AlertDialog.Builder alert_confirm = new AlertDialog.Builder(RegisterActivity.this);
                         alert_confirm.setTitle("학생 정보 확인");
                         alert_confirm.setMessage(String.valueOf(infoGrade) + "학년 " + String.valueOf(infoClass) + "반 " + String.valueOf(infoNumber) + "번 " + infoName + "\n위의 내용으로 학생 정보를 저장합니다.").setCancelable(false).setPositiveButton("정보 저장",
@@ -121,6 +121,18 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 });
                         AlertDialog alert = alert_confirm.create();
+                        alert.show();
+                    }
+                    else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(RegisterActivity.this);
+                        alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();     //닫기
+                            }
+                        });
+                        alert.setTitle("학생 정보 확인");
+                        alert.setMessage("빈 내용이 존재합니다.\n모든 내용을 기입후 학생을 등록해주세요");
                         alert.show();
                     }
                 break;

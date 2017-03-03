@@ -43,14 +43,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/setting_auto_update"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:onClick="onClick"/>
 
         <CheckBox
             android:text="공지사항 자동 안내"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/setting_notice"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:onClick="onClick"/>
 
         <Button
             android:text="오류 제보"
