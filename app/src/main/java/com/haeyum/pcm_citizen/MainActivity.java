@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences.Editor speSchedule;
     SharedPreferences spCalendar;
     SharedPreferences.Editor speCalendar;
+    SharedPreferences spSetting;
 
     //학생 정보
     String infoName, infoCode;
@@ -89,6 +90,10 @@ public class MainActivity extends AppCompatActivity
     String schedule[] = new String[5];
     String calendar[] = new String[13];
     String monthC; //monthChange
+
+    //설정
+    boolean set_autoUpdate = true;
+    boolean set_notice = true;
 
     //날짜
     Calendar oCalendar = Calendar.getInstance( );
@@ -156,6 +161,11 @@ public class MainActivity extends AppCompatActivity
         spCalendar = getSharedPreferences("Calendar", 0);
         speCalendar = spCalendar.edit();
 
+        //설정
+        spSetting = getSharedPreferences("Setting", 0);
+        set_autoUpdate = spSetting.getBoolean("autoUpdate", true);
+        set_notice = spSetting.getBoolean("notice", true);
+
         //네트워크 연결 확인
         ConnectivityManager cManager;
         NetworkInfo mobile;
@@ -178,7 +188,9 @@ public class MainActivity extends AppCompatActivity
             loadHtml(1);
             loadHtml(3);
             loadHtml(4);
-            loadHtml(5);
+
+            if(set_notice)
+                loadHtml(5);
 
             lunch_load();
         }
@@ -453,68 +465,73 @@ public class MainActivity extends AppCompatActivity
 
                                     int max_lunch;
 
-                                    if(spLunch.getInt("lunch_max" + year + monthC, 0) == 0) {
-                                        pos1 = lunch_month[0].indexOf("<tbody>") + 7;
-                                        pos2 = lunch_month[0].indexOf("알레르기") + 4;
-
-                                        lunch_month[0] = lunch_month[0].substring(pos1, pos2);
-
-                                        for (i = 34; ; i--)
-                                            if (lunch_month[0].indexOf("<div>" + i) != -1) {
-                                                max_lunch = i;
-                                                break;
-                                            }
-
-                                        for (i = 1; i <= max_lunch; i++) {
-                                            pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
+                                    if(set_autoUpdate)
+                                        if(spLunch.getInt("lunch_max" + year + monthC, 0) == 0) {
+                                            pos1 = lunch_month[0].indexOf("<tbody>") + 7;
                                             pos2 = lunch_month[0].indexOf("알레르기") + 4;
+
                                             lunch_month[0] = lunch_month[0].substring(pos1, pos2);
 
-                                            pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i));
-                                            pos2 = lunch_month[0].indexOf("</td>");
+                                            for (i = 34; ; i--)
+                                                if (lunch_month[0].indexOf("<div>" + i) != -1) {
+                                                    max_lunch = i;
+                                                    break;
+                                                }
 
-                                            lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
-                                        }
+                                            for (i = 1; i <= max_lunch; i++) {
+                                                pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i) + "<");
+                                                pos2 = lunch_month[0].indexOf("알레르기") + 4;
+                                                lunch_month[0] = lunch_month[0].substring(pos1, pos2);
 
-                                        speLunch.putInt("lunch_max" + year + monthC, max_lunch);
-                                        speLunch.commit();
+                                                pos1 = lunch_month[0].indexOf("<div>" + String.valueOf(i));
+                                                pos2 = lunch_month[0].indexOf("</td>");
 
-                                        for (i = 1; i <= max_lunch; i++) {
-                                            temp += "[" + i + "일]";
-                                            lunch_month[i] = lunch_month[i].replace("<div>" + i, "");
-                                            lunch_month[i] = lunch_month[i].replace("</div>", "");
-                                            lunch_month[i] = lunch_month[i].replace("<br />", "\n");
-                                            lunch_month[i] = lunch_month[i].replace("</td>", "");
+                                                lunch_month[i] = lunch_month[0].substring(pos1, pos2 + 6);
+                                            }
 
-                                            if (lunch_month[i].indexOf("중식") == -1)
-                                                lunch_month[i] = "\n급식이 없습니다.\n";
-                                            else
-                                                lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
-
-                                            lunch_month[i] = lunch_month[i].replace("[중식]", "");
-                                            lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length() - 1);
-
-                                            temp += lunch_month[i] + "\n";
-
-                                            speLunch.putString("lunch_" + year + monthC + "m" + i + "d", lunch_month[i]); //lunch_10m3d
+                                            speLunch.putInt("lunch_max" + year + monthC, max_lunch);
                                             speLunch.commit();
 
-                                            //Log.d("" + i, lunch_month[i]);
+                                            for (i = 1; i <= max_lunch; i++) {
+                                                temp += "[" + i + "일]";
+                                                lunch_month[i] = lunch_month[i].replace("<div>" + i, "");
+                                                lunch_month[i] = lunch_month[i].replace("</div>", "");
+                                                lunch_month[i] = lunch_month[i].replace("<br />", "\n");
+                                                lunch_month[i] = lunch_month[i].replace("</td>", "");
+
+                                                if (lunch_month[i].indexOf("중식") == -1)
+                                                    lunch_month[i] = "\n급식이 없습니다.\n";
+                                                else
+                                                    lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length());
+
+                                                lunch_month[i] = lunch_month[i].replace("[중식]", "");
+                                                lunch_month[i] = lunch_month[i].substring(1, lunch_month[i].length() - 1);
+
+                                                temp += lunch_month[i] + "\n";
+
+                                                speLunch.putString("lunch_" + year + monthC + "m" + i + "d", lunch_month[i]); //lunch_10m3d
+                                                speLunch.commit();
+
+                                                //Log.d("" + i, lunch_month[i]);
+                                            }
+
+                                            btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
+                                        }
+                                        else {
+                                            btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                         }
 
-                                        btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
-                                    }
                                     else {
                                         btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                     }
 
-                                    lunch_text = "";
-                                    max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
+                                        lunch_text = "";
+                                        max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
 
-                                    for(i=1; i<=max_lunch; i++) {
-                                        lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
-                                    }
-                                    //onAlert("", lunch_text);
+                                        for(i=1; i<=max_lunch; i++) {
+                                            lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
+                                        }
+                                        //onAlert("", lunch_text);
 
                                     break;
 
@@ -588,111 +605,127 @@ public class MainActivity extends AppCompatActivity
                                     pos2 = schedule_text.indexOf(";");
                                     ver = schedule_text.substring(pos1 + 1, pos2);
 
-                                    if(!scheduleVersion.equals(ver))
-                                    {
-                                        StringBuffer sb;
-
-                                        pos1 = schedule_text.indexOf("[" + infoCode + "]");
-                                        schedule_text = schedule_text.substring(pos1, schedule_text.length());
-
-                                        pos1 = schedule_text.indexOf("월") + 2;
-                                        pos2 = schedule_text.indexOf(";");
-                                        schedule[0] = schedule_text.substring(pos1, pos2);
-                                        schedule[0] = schedule[0].replaceAll("/", "\ni교시 : ");
-                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
-                                        schedule[0] = "i교시 : " + schedule[0];
-                                        sb = new StringBuffer(schedule[0]);
-
-                                        for(i=1; i<=7;  i++)
+                                    if(set_autoUpdate)
+                                        if(!scheduleVersion.equals(ver))
                                         {
-                                            pos1 = sb.indexOf("i교시");
-                                            sb.delete(pos1, pos1 + 1);
-                                            sb.insert(pos1, i);
+                                            StringBuffer sb;
+
+                                            pos1 = schedule_text.indexOf("[" + infoCode + "]");
+                                            schedule_text = schedule_text.substring(pos1, schedule_text.length());
+
+                                            pos1 = schedule_text.indexOf("월") + 2;
+                                            pos2 = schedule_text.indexOf(";");
+                                            schedule[0] = schedule_text.substring(pos1, pos2);
+                                            schedule[0] = schedule[0].replaceAll("/", "\ni교시 : ");
+                                            schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                            schedule[0] = "i교시 : " + schedule[0];
+                                            sb = new StringBuffer(schedule[0]);
+
+                                            for(i=1; i<=7;  i++)
+                                            {
+                                                pos1 = sb.indexOf("i교시");
+                                                sb.delete(pos1, pos1 + 1);
+                                                sb.insert(pos1, i);
+                                            }
+                                            schedule[0] = sb.toString();
+
+                                            pos1 = schedule_text.indexOf("화") + 2;
+                                            pos2 = schedule_text.indexOf(";");
+                                            schedule[1] = schedule_text.substring(pos1, pos2);
+                                            schedule[1] = schedule[1].replace("/", "\ni교시 : ");
+                                            schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                            schedule[1] = "i교시 : " + schedule[1];
+                                            sb = new StringBuffer(schedule[1]);
+
+                                            for(i=1; i<=7;  i++)
+                                            {
+                                                pos1 = sb.indexOf("i교시");
+                                                sb.delete(pos1, pos1 + 1);
+                                                sb.insert(pos1, i);
+                                            }
+                                            schedule[1] = sb.toString();
+
+                                            pos1 = schedule_text.indexOf("수") + 2;
+                                            pos2 = schedule_text.indexOf(";");
+                                            schedule[2] = schedule_text.substring(pos1, pos2);
+                                            schedule[2] = schedule[2].replaceAll("/", "\ni교시 : ");
+                                            schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                            schedule[2] = "i교시 : " + schedule[2];
+                                            sb = new StringBuffer(schedule[2]);
+                                            for(i=1; i<=7;  i++)
+                                            {
+                                                pos1 = sb.indexOf("i교시");
+                                                sb.delete(pos1, pos1 + 1);
+                                                sb.insert(pos1, i);
+                                            }
+                                            schedule[2] = sb.toString();
+
+                                            pos1 = schedule_text.indexOf("목") + 2;
+                                            pos2 = schedule_text.indexOf(";");
+                                            schedule[3] = schedule_text.substring(pos1, pos2);
+                                            schedule[3] = schedule[3].replaceAll("/", "\ni교시 : ");
+                                            schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                            schedule[3] = "i교시 : " + schedule[3];
+                                            sb = new StringBuffer(schedule[3]);
+                                            for(i=1; i<=7;  i++)
+                                            {
+                                                pos1 = sb.indexOf("i교시");
+                                                sb.delete(pos1, pos1 + 1);
+                                                sb.insert(pos1, i);
+                                            }
+                                            schedule[3] = sb.toString();
+
+                                            pos1 = schedule_text.indexOf("금") + 2;
+                                            pos2 = schedule_text.indexOf(";");
+                                            schedule[4] = schedule_text.substring(pos1, pos2);
+                                            schedule[4] = schedule[4].replaceAll("/", "\ni교시 : ");
+                                            schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
+                                            schedule[4] = "i교시 : " + schedule[4];
+                                            sb = new StringBuffer(schedule[4]);
+
+                                            for(i=1; i<=7;  i++)
+                                            {
+                                                pos1 = sb.indexOf("i교시");
+                                                sb.delete(pos1, pos1 + 1);
+                                                sb.insert(pos1, i);
+                                            }
+                                            schedule[4] = sb.toString();
+
+                                            btn_schedule.setText("Today Schedule\n\n" + schedule[1]);
+                                            //alert.setMessage(schedule_text);
+                                            //alert.setMessage(String.valueOf(pos1));
+                                            //alert.setMessage(ver);
+                                            //alert.setMessage(schedule[4]);
+                                            //alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
+                                            //alert.show();
+
+                                            speSchedule.putString("Version", ver);
+                                            speSchedule.putString("Monday", schedule[0]);
+                                            speSchedule.putString("Tuesday", schedule[1]);
+                                            speSchedule.putString("Wednesday", schedule[2]);
+                                            speSchedule.putString("Thursday", schedule[3]);
+                                            speSchedule.putString("Friday", schedule[4]);
+                                            speSchedule.commit();
+
+                                            alert.setTitle("시간표 업데이트");
+                                            alert.setMessage("시간표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
+                                            alert.show();
                                         }
-                                        schedule[0] = sb.toString();
-
-                                        pos1 = schedule_text.indexOf("화") + 2;
-                                        pos2 = schedule_text.indexOf(";");
-                                        schedule[1] = schedule_text.substring(pos1, pos2);
-                                        schedule[1] = schedule[1].replace("/", "\ni교시 : ");
-                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
-                                        schedule[1] = "i교시 : " + schedule[1];
-                                        sb = new StringBuffer(schedule[1]);
-
-                                        for(i=1; i<=7;  i++)
+                                        else
                                         {
-                                            pos1 = sb.indexOf("i교시");
-                                            sb.delete(pos1, pos1 + 1);
-                                            sb.insert(pos1, i);
+                                            schedule[0] = spSchedule.getString("Monday", null);
+                                            schedule[1] = spSchedule.getString("Tuesday", null);
+                                            schedule[2] = spSchedule.getString("Wednesday", null);
+                                            schedule[3] = spSchedule.getString("Thursday", null);
+                                            schedule[4] = spSchedule.getString("Friday", null);
+
+                                            //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
+
+                                            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                                                btn_schedule.setText("Today Schedule\n\n행복한 주말");
+                                            else
+                                                btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
                                         }
-                                        schedule[1] = sb.toString();
-
-                                        pos1 = schedule_text.indexOf("수") + 2;
-                                        pos2 = schedule_text.indexOf(";");
-                                        schedule[2] = schedule_text.substring(pos1, pos2);
-                                        schedule[2] = schedule[2].replaceAll("/", "\ni교시 : ");
-                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
-                                        schedule[2] = "i교시 : " + schedule[2];
-                                        sb = new StringBuffer(schedule[2]);
-                                        for(i=1; i<=7;  i++)
-                                        {
-                                            pos1 = sb.indexOf("i교시");
-                                            sb.delete(pos1, pos1 + 1);
-                                            sb.insert(pos1, i);
-                                        }
-                                        schedule[2] = sb.toString();
-
-                                        pos1 = schedule_text.indexOf("목") + 2;
-                                        pos2 = schedule_text.indexOf(";");
-                                        schedule[3] = schedule_text.substring(pos1, pos2);
-                                        schedule[3] = schedule[3].replaceAll("/", "\ni교시 : ");
-                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
-                                        schedule[3] = "i교시 : " + schedule[3];
-                                        sb = new StringBuffer(schedule[3]);
-                                        for(i=1; i<=7;  i++)
-                                        {
-                                            pos1 = sb.indexOf("i교시");
-                                            sb.delete(pos1, pos1 + 1);
-                                            sb.insert(pos1, i);
-                                        }
-                                        schedule[3] = sb.toString();
-
-                                        pos1 = schedule_text.indexOf("금") + 2;
-                                        pos2 = schedule_text.indexOf(";");
-                                        schedule[4] = schedule_text.substring(pos1, pos2);
-                                        schedule[4] = schedule[4].replaceAll("/", "\ni교시 : ");
-                                        schedule_text = schedule_text.substring(pos2 + 1, schedule_text.length());
-                                        schedule[4] = "i교시 : " + schedule[4];
-                                        sb = new StringBuffer(schedule[4]);
-
-                                        for(i=1; i<=7;  i++)
-                                        {
-                                            pos1 = sb.indexOf("i교시");
-                                            sb.delete(pos1, pos1 + 1);
-                                            sb.insert(pos1, i);
-                                        }
-                                        schedule[4] = sb.toString();
-
-                                        btn_schedule.setText("Today Schedule\n\n" + schedule[1]);
-                                        //alert.setMessage(schedule_text);
-                                        //alert.setMessage(String.valueOf(pos1));
-                                        //alert.setMessage(ver);
-                                        //alert.setMessage(schedule[4]);
-                                        //alert.setMessage(schedule[0] + "\n\n" + schedule[1] + "\n\n" + schedule[2] + "\n\n" + schedule[3] + "\n\n" + schedule[4]);
-                                        //alert.show();
-
-                                        speSchedule.putString("Version", ver);
-                                        speSchedule.putString("Monday", schedule[0]);
-                                        speSchedule.putString("Tuesday", schedule[1]);
-                                        speSchedule.putString("Wednesday", schedule[2]);
-                                        speSchedule.putString("Thursday", schedule[3]);
-                                        speSchedule.putString("Friday", schedule[4]);
-                                        speSchedule.commit();
-
-                                        alert.setTitle("시간표 업데이트");
-                                        alert.setMessage("시간표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
-                                        alert.show();
-                                    }
                                     else
                                     {
                                         schedule[0] = spSchedule.getString("Monday", null);
@@ -721,47 +754,55 @@ public class MainActivity extends AppCompatActivity
                                     pos2 = calendar_text.indexOf(";");
                                     ver = calendar_text.substring(pos1 + 1, pos2);
 
-                                    if(!calendarVersion.equals(ver))
-                                    {
-                                        calendar_text = calendar_text.substring(pos1, calendar_text.length());
+                                    if(set_autoUpdate)
+                                        if(!calendarVersion.equals(ver))
+                                        {
+                                            calendar_text = calendar_text.substring(pos1, calendar_text.length());
 
-                                        for(i=1; i<=12; i++) {
-                                            calendar[i] = "일정이 없습니다.";
+                                            for(i=1; i<=12; i++) {
+                                                calendar[i] = "일정이 없습니다.";
 
-                                            if(i < 10) {
-                                                pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 9; //201703
-                                                pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
+                                                if(i < 10) {
+                                                    pos1 = calendar_text.indexOf("[" + year + "0" + i + "]") + 9; //201703
+                                                    pos2 = calendar_text.indexOf("[" + year + "0" + i + "]$"); //201703$
+                                                }
+                                                else {
+                                                    pos1 = calendar_text.indexOf("[" + year + i + "]") + 9; //201703
+                                                    pos2 = calendar_text.indexOf("[" + year + i + "]$"); //201703$
+                                                }
+
+                                                //onAlert("", pos1 + " / " + pos2);
+
+                                                if(pos1 >= 1) {
+                                                    calendar[i] = calendar_text.substring(pos1, pos2);
+                                                    calendar[i] = calendar[i].replaceAll("=", " : ");
+                                                    calendar[i] = calendar[i].replaceAll("월", "월 ");
+
+                                                    if(calendar[i].length() > 0)
+                                                        calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
+                                                    //else
+                                                        //onAlert("", String.valueOf(i));
+                                                }
+
+                                                //Log.d("i : " + i, calendar[i]);
                                             }
-                                            else {
-                                                pos1 = calendar_text.indexOf("[" + year + i + "]") + 9; //201703
-                                                pos2 = calendar_text.indexOf("[" + year + i + "]$"); //201703$
-                                            }
 
-                                            //onAlert("", pos1 + " / " + pos2);
+                                            btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
 
-                                            if(pos1 >= 1) {
-                                                calendar[i] = calendar_text.substring(pos1, pos2);
-                                                calendar[i] = calendar[i].replaceAll("=", " : ");
-                                                calendar[i] = calendar[i].replaceAll("월", "월 ");
+                                            for(i=1; i<13; i++)
+                                                speCalendar.putString("Calendar[" + i + "]", calendar[i]);
+                                            speCalendar.putString("Version", ver);
+                                            speCalendar.commit();
 
-                                                if(calendar[i].length() > 0)
-                                                    calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
-                                                //else
-                                                    //onAlert("", String.valueOf(i));
-                                            }
+                                            onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
+                                        }
+                                        else {
+                                            for (i = 1; i < 13; i++)
+                                                calendar[i] = spCalendar.getString("Calendar[" + i + "]", "ERROR");
 
-                                            //Log.d("i : " + i, calendar[i]);
+                                            btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
                                         }
 
-                                        btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
-
-                                        for(i=1; i<13; i++)
-                                            speCalendar.putString("Calendar[" + i + "]", calendar[i]);
-                                        speCalendar.putString("Version", ver);
-                                        speCalendar.commit();
-
-                                        onAlert("일정표 업데이트", "일정표를 최신버전으로 업데이트하였습니다.\n" + "업데이트된 버전 : " + ver);
-                                    }
                                     else {
                                         for (i = 1; i < 13; i++)
                                             calendar[i] = spCalendar.getString("Calendar[" + i + "]", "ERROR");

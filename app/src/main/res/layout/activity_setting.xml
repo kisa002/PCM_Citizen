@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#72c7fc"
+    android:background="@color/colorBackGround"
     tools:context="com.haeyum.pcm_citizen.SettingActivity">
 
     <Button
@@ -34,6 +34,7 @@
 
         <Button
             android:text="학생정보 초기화"
+            android:background="@drawable/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_reset"
@@ -41,14 +42,18 @@
 
         <CheckBox
             android:text="자동 업데이트"
+            android:background="@drawable/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
             android:id="@+id/setting_auto_update"
             android:gravity="center"
             android:onClick="onClick"/>
 
         <CheckBox
             android:text="공지사항 자동 안내"
+            android:background="@drawable/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/setting_notice"
@@ -57,20 +62,26 @@
 
         <Button
             android:text="오류 제보"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_report"
             android:onClick="onClick" />
 
         <Button
-            android:text="업데이트 내역"
+            android:id="@+id/btn_history"
+            android:layout_marginTop="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_history"
-            android:onClick="onClick" />
+            android:background="@drawable/button"
+            android:onClick="onClick"
+            android:text="업데이트 내역" />
 
         <Button
             android:text="개발자 정보"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_producer"
