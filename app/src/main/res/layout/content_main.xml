@@ -39,6 +39,7 @@
                 android:id="@+id/btn_weather"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:textColor="#FFFFFF"
                 android:onClick="onClick" />
 
             <Button
@@ -51,6 +52,7 @@
                 android:layout_below="@+id/btn_weather"
                 android:layout_alignLeft="@+id/btn_weather"
                 android:layout_alignStart="@+id/btn_weather"
+                android:textColor="#FFFFFF"
                 android:onClick="onClick" />
 
             <Button
@@ -63,6 +65,7 @@
                 android:layout_alignLeft="@+id/btn_lunch"
                 android:layout_alignStart="@+id/btn_lunch"
                 android:id="@+id/btn_scheudle"
+                android:textColor="#FFFFFF"
                 android:onClick="onClick" />
 
             <Button
@@ -75,6 +78,7 @@
                 android:layout_alignLeft="@+id/btn_lunch"
                 android:layout_alignStart="@+id/btn_lunch"
                 android:id="@+id/btn_calendar"
+                android:textColor="#FFFFFF"
                 android:onClick="onClick"/>
         </LinearLayout>
     </ScrollView>
