@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#72c7fc"
     tools:context="com.haeyum.pcm_citizen.SettingActivity">
 
     <Button
@@ -62,7 +63,7 @@
             android:onClick="onClick" />
 
         <Button
-            android:text="수정 내역"
+            android:text="업데이트 내역"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_history"

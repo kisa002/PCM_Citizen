@@ -771,7 +771,9 @@ public class MainActivity extends AppCompatActivity
                                     break;
 
                                 case 5:
-                                    onAlert("공지사항", web_text);
+                                    if(!web_text.equals(""))
+                                        onAlert("공지사항", web_text);
+
                                     break;
                             }
                         }
