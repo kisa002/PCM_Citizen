@@ -249,8 +249,13 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(getApplicationContext(), SettingActivity.class));
             return true;
         }
+        else {
+            onAlert("오류 전송", "밑의 연락처로 오타 또는 오류를 보내주세요\n\n전화번호 : 010-6348-1143\n\n예시) 1학년 7반 월요일과 화요일 시간표가 달라요!");
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

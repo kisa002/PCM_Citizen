@@ -80,7 +80,7 @@ public class SettingActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_report:
-                onAlert("오류 제보","오타나 버그가 있을 경우 010-6348-1143으로 문자주시면 신속하게 해결해드리겠습니다\n\nex) 1학년 7반인데 일정표가 잘못나왔습니다");
+                onAlert("오류 제보", "밑의 연락처로 오타 또는 오류를 보내주세요\n\n전화번호 : 010-6348-1143\n\n예시) 1학년 7반 월요일과 화요일 시간표가 달라요!");
                 break;
 
             case R.id.btn_reset:
@@ -119,7 +119,7 @@ public class SettingActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_history:
-                onAlert("업데이트 내역", "2017.02.26 이전 데이터 복구\n2017.02.27 학생등록 추가\n2016.02.28 시간표 알고리즘 변경\n2016.03.01 일정표 알고리즘 변경\n2016.03.02 급식 오류 수정 및 알고리즘 변경\n2016.03.04 설정 메뉴 추가 및 레이아웃 색상과 아이콘 변경");
+                onAlert("업데이트 내역", "2017.02.26 이전 데이터 복구\n2017.02.27 학생등록 추가\n2016.02.28 시간표 알고리즘 변경\n2016.03.01 일정표 알고리즘 변경\n2016.03.02 급식 오류 수정 및 알고리즘 변경\n2016.03.04 설정 메뉴 추가 및 레이아웃 색상과 아이콘 변경\n2016.03.05 레이아웃 색상 변경 및 메뉴 추가, Splash 변경");
                 break;
 
             case R.id.btn_producer:
