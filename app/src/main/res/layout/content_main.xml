@@ -66,16 +66,16 @@
                 android:onClick="onClick" />
 
             <Button
-                android:background="@drawable/round"
-                android:text="TODAY CALENDAR\n\nServer Connecting..."
+                android:id="@+id/btn_calendar"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginTop="23dp"
-                android:layout_below="@+id/btn_lunch"
                 android:layout_alignLeft="@+id/btn_lunch"
                 android:layout_alignStart="@+id/btn_lunch"
-                android:id="@+id/btn_calendar"
-                android:onClick="onClick"/>
+                android:layout_below="@+id/btn_lunch"
+                android:layout_marginTop="23dp"
+                android:background="@drawable/round"
+                android:onClick="onClick"
+                android:text="TODAY CALENDAR\n\nServer Connecting..." />
         </LinearLayout>
     </ScrollView>
 
