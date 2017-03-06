@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity
         //상태바 없애자
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
         //User 데이터 받아오기
         SharedPreferences user = getSharedPreferences("User", 0);
         infoName = user.getString("infoName", "ERROR");
@@ -847,4 +848,6 @@ public class MainActivity extends AppCompatActivity
         alert.setMessage(msg);
         alert.show();
     }
+
+
 }

@@ -25,57 +25,58 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_centerHorizontal="true">
-            <!--<ImageView
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:id="@+id/img_weather" />-->
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
             <Button
                 android:background="@drawable/round"
                 android:text="TODAY WEATHER\n\nSERVER CONNECTING..."
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="14dp"
                 android:id="@+id/btn_weather"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:onClick="onClick" />
-
+                android:onClick="onClick"
+                android:textSize="20dp"/>
             <Button
                 android:background="@drawable/round"
                 android:text="Today Lunch\n\nServer Connecting..."
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="250dp"
                 android:layout_marginTop="23dp"
                 android:id="@+id/btn_lunch"
                 android:layout_below="@+id/btn_weather"
                 android:layout_alignLeft="@+id/btn_weather"
                 android:layout_alignStart="@+id/btn_weather"
-                android:onClick="onClick" />
+                android:onClick="onClick"
+                android:textSize="20dp"/>
 
             <Button
                 android:background="@drawable/round"
                 android:text="Today Schedule\n\nServer Connecting..."
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="250dp"
                 android:layout_marginTop="23dp"
                 android:layout_below="@+id/btn_lunch"
                 android:layout_alignLeft="@+id/btn_lunch"
                 android:layout_alignStart="@+id/btn_lunch"
                 android:id="@+id/btn_scheudle"
-                android:onClick="onClick" />
+                android:onClick="onClick"
+                android:textSize="20dp"/>
 
             <Button
                 android:id="@+id/btn_calendar"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="240dp"
                 android:layout_alignLeft="@+id/btn_lunch"
                 android:layout_alignStart="@+id/btn_lunch"
                 android:layout_below="@+id/btn_lunch"
                 android:layout_marginTop="23dp"
                 android:background="@drawable/round"
                 android:onClick="onClick"
-                android:text="TODAY CALENDAR\n\nServer Connecting..." />
+                android:text="TODAY CALENDAR\n\nServer Connecting..."
+                android:textSize="20dp"/>
         </LinearLayout>
     </ScrollView>
 
