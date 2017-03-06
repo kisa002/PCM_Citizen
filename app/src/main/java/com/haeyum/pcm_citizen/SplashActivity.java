@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Handler;
+import android.widget.TextView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -72,6 +73,9 @@ public class SplashActivity extends Activity {
                     finish();
                 }
             }, 2000);
+
+            TextView tvSplash = (TextView)findViewById(R.id.TextSplash);
+            tvSplash.setText("ver 1.0");
         }
         else {
             //Log.d("Result","CONNECT Failed");
