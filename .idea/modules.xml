@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PCM_Citizen.iml" filepath="$PROJECT_DIR$/PCM_Citizen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PCM_Citizen-master.iml" filepath="$PROJECT_DIR$/PCM_Citizen-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

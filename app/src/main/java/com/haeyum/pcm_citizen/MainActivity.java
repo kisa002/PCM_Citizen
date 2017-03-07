@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     SharedPreferences spCalendar;
     SharedPreferences.Editor speCalendar;
     SharedPreferences spSetting;
+    SharedPreferences.Editor speSetting;
 
     //학생 정보
     String infoName, infoCode;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity
     //설정
     boolean set_autoUpdate = true;
     boolean set_notice = true;
+    boolean set_tutorial = false;
 
     //날짜
     Calendar oCalendar = Calendar.getInstance( );
@@ -162,11 +164,14 @@ public class MainActivity extends AppCompatActivity
         speSchedule = spSchedule.edit();
         spCalendar = getSharedPreferences("Calendar", 0);
         speCalendar = spCalendar.edit();
+        spSetting = getSharedPreferences("Setting", 0);
+        speSetting = spSetting.edit();
 
         //설정
         spSetting = getSharedPreferences("Setting", 0);
         set_autoUpdate = spSetting.getBoolean("autoUpdate", true);
         set_notice = spSetting.getBoolean("notice", true);
+        set_tutorial = spSetting.getBoolean("tutorial", false);
 
         //네트워크 연결 확인
         ConnectivityManager cManager;
@@ -223,6 +228,12 @@ public class MainActivity extends AppCompatActivity
 
             btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
         }
+
+        if(!set_tutorial) {
+            onAlert("간단한 튜토리얼", "메인 화면에 있는 버튼을 누르면 이번주 혹은 이번달 내용이 나옵니다!\n\n좌측 상단에 있는 네비게이션바로도 이용이 가능합니다!\n\n예를 들면 시간표의 경우에는 이번주, 점심의 경우에는 이번달 급식표가 나온다고나 할까요...?\n\n모두 스마트콘테츠과 대표 소프트웨어 개발 동아리 멀티코어를 많이 사랑해주세요!");
+            speSetting.putBoolean("tutorial", true);
+            speSetting.commit();
+        }
     }
 
     @Override
@@ -255,7 +266,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         else {
-            onAlert("오류 전송", "밑의 연락처로 오타 또는 오류를 보내주세요\n\n전화번호 : 010-6348-1143\n\n예시) 1학년 7반 월요일과 화요일 시간표가 달라요!");
+            onAlert("오류 제보", "밑의 연락처로 오타 또는 오류를 보내주세요\n\n전화번호 : 010-6348-1143\n\n예시) 1학년 7반 월요일과 화요일 시간표가 달라요!");
         }
 
 
