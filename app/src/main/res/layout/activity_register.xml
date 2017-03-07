@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#b8c2d6"
+    android:background="#e2e2e2"
     tools:context="com.haeyum.pcm_citizen.RegisterActivity">
 
 

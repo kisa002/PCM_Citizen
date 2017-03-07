@@ -41,9 +41,31 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        //SP
-        spVersion = getSharedPreferences("Version", 0);
+        Log.d("Result","CONNECT Failed");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
 
+            @Override
+            public void run() {
+                SharedPreferences user = getSharedPreferences("User", 0);
+                if (user.getString("infoCode", null) == null) {
+                    Intent register = new Intent(getApplicationContext(), RegisterActivity.class);
+                    startActivity(register);
+                } else {
+                    Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(main);
+                }
+                finish();
+            }
+        }, 2000);
+
+        TextView tvSplash = (TextView)findViewById(R.id.TextSplash);
+        tvSplash.setText("ver 1.0");
+
+        //SP
+        //spVersion = getSharedPreferences("Version", 0);
+
+        /*
         //네트워크 연결 확인
         ConnectivityManager cManager;
         NetworkInfo mobile;
@@ -96,8 +118,10 @@ public class SplashActivity extends Activity {
                 }
             }, 2000);
         }
+        */
     }
 
+    /*
     void loadHtml(final int menu) { // 웹에서 html 읽어오기
         Thread t = new Thread(new Runnable() {
             @Override
@@ -160,6 +184,7 @@ public class SplashActivity extends Activity {
         t.start(); // 쓰레드 시작
     }
 
+
     private void updateCheck() {
         version = spVersion.getString("Version", "20170306");
 
@@ -200,4 +225,5 @@ public class SplashActivity extends Activity {
             alert.show();
         }
     }
+    */
 }

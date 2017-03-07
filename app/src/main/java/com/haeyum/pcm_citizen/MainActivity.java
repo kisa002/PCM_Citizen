@@ -286,11 +286,8 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_lunch:
-                if(isNetwork)
-                    loadHtml(0);
-                alert.setTitle("오늘 급식");
-                alert.setMessage(lunch_text);
-                //alert.show();
+                loadHtml(0);
+                onAlert("이번달 급식", lunch_text);
                 break;
 
             case R.id.nav_calendar:

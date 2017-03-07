@@ -19,7 +19,7 @@
             android:id="@+id/LogoSplash"
             android:layout_width="wrap_content"
             android:layout_height="172dp"
-            android:layout_marginTop="240dp"
+            android:layout_marginTop="200dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/img_kysimin_logo" />
 
