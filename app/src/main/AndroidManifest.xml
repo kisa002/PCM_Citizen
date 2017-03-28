@@ -28,7 +28,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".BookSearchActivity" />
+        <activity android:name=".BookInformationActivity"></activity>
     </application>
 
 </manifest>

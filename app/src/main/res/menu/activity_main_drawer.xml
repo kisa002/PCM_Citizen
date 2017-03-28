@@ -3,6 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_library"
+            android:title="도서 검색" />
+        <item
             android:id="@+id/nav_schedule"
             android:title="시간표" />
         <item
