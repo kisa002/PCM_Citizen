@@ -188,6 +188,8 @@ public class MainActivity extends AppCompatActivity
         }
         else
         {
+            //급식 비교 추가해야함
+
             //날씨
             btn_weather.setText("Today Weather\n\n네트워크를 연결해주세요.\n연결이 되어야 날씨 확인이 가능합니다");
 
