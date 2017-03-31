@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity
             btn_weather.setText("Today Weather\n\n네트워크를 연결해주세요.\n연결이 되어야 날씨 확인이 가능합니다");
 
             //급식
-            btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+            btn_lunch.setText("Today Lunch[A]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
             lunch_load();
 
             //시간표
@@ -539,12 +539,12 @@ public class MainActivity extends AppCompatActivity
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
-                                                    btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
+                                                    btn_lunch.setText("Today Lunch[B]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
                                                     //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC) + 1) + "m" + 1 + "d", "ERROR CODE W000"));
                                                 }
                                             }
                                             else {
-                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
+                                                btn_lunch.setText("Today Lunch[C]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
                                             }
                                         }
                                         else {
@@ -552,12 +552,12 @@ public class MainActivity extends AppCompatActivity
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
-                                                    btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                    btn_lunch.setText("Today Lunch[D]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                                     //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC)+1) + "m" + 1 + "d", "ERROR CODE W000"));
                                                 }
                                             }
                                             else
-                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                btn_lunch.setText("Today Lunch[E]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                         }
 
                                     else {
@@ -566,7 +566,7 @@ public class MainActivity extends AppCompatActivity
                                             if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                 btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                             else {
-                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                btn_lunch.setText("Today Lunch[F]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                                 //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC)+1) + "m" + 1 + "d", "ERROR CODE W000"));
                                             }
                                     }
@@ -623,7 +623,7 @@ public class MainActivity extends AppCompatActivity
                                         lunch_text = lunch_text.replace(">[중식]", "");
                                         lunch_text = lunch_text.replace("[중식]", "");
 
-                                        btn_lunch.setText("TODAY LUNCH\n" + lunch_text);
+                                        btn_lunch.setText("TODAY LUNCH[H]\n" + lunch_text);
 
                                         alert.setTitle("오늘 급식");
                                         alert.setMessage(lunch_text);
@@ -633,7 +633,7 @@ public class MainActivity extends AppCompatActivity
                                     else {
 
                                         lunch_text = "오늘 급식은 없습니다.";
-                                        btn_lunch.setText("TODAY LUNCH\n\n" + lunch_text);
+                                        btn_lunch.setText("TODAY LUNCH[I]\n\n" + lunch_text);
 
                                         alert.setTitle("오늘 급식");
                                         alert.setMessage(lunch_text);
@@ -766,6 +766,10 @@ public class MainActivity extends AppCompatActivity
                                             schedule[4] = spSchedule.getString("Friday", null);
 
                                             //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
+
+                                            //캘린더 이 부분 다음달로 넘어간다면 안바뀌도록 해보자..
+                                            Calendar c = Calendar.getInstance();
+                                            c.set(day, month, 1);
 
                                             if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                                                 btn_schedule.setText("Today Schedule\n\n행복한 주말");
