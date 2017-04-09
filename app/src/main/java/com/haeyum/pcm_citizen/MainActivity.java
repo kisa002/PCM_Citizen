@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -202,16 +203,19 @@ public class MainActivity extends AppCompatActivity
             schedule[3] = spSchedule.getString("Thursday", null);
             schedule[4] = spSchedule.getString("Friday", null);
 
-            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                btn_schedule.setText("Today Schedule\n\n행복한 주말");
+            long now = System.currentTimeMillis();
+            Date date = new Date(now);
+
+            SimpleDateFormat sdfNow = new SimpleDateFormat("HH");
+            String formatDate = sdfNow.format(date);
+
+            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                btn_schedule.setText("Today Schedule\n\n행복한 토요일");
+            else if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                btn_schedule.setText("Monday Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
+            }
             else {
-                long now = System.currentTimeMillis();
-                Date date = new Date(now);
-
-                SimpleDateFormat sdfNow = new SimpleDateFormat("HH");
-                String formatDate = sdfNow.format(date);
-
-                if(Integer.parseInt(formatDate) >= 19)
+                if(Integer.parseInt(formatDate) >= 18)
                     btn_schedule.setText("Tomorrow Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
                 else
                     btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
@@ -220,6 +224,8 @@ public class MainActivity extends AppCompatActivity
             //일정표
             for (int i = 1; i < 13; i++)
                 calendar[i] = spCalendar.getString("Calendar[" + i + "]", "ERROR");
+
+            btn_calendar.setText("Month Calendar\n\n" + calendar[month]);
         }
 
         if(!set_tutorial) {
@@ -365,7 +371,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.btn_calendar:
                 loadHtml(4);
-                onAlert("올해 일정", "[1월 일정]\n" + calendar[1] + "\n\n[2월 일정]\n" + calendar[2] + "\n\n[3월 일정]\n" + calendar[3] + "\n\n[3월 일정]\n" + calendar[4] + "\n\n[5월 일정]\n" + calendar[5] + "\n\n[6월 일정]\n" + calendar[6] + "\n\n[7월 일정]\n" + calendar[7] + "\n\n[8월 일정]\n" + calendar[8] + "\n\n[9월 일정]\n" + calendar[9] + "\n\n[10월 일정]\n" + calendar[10] + "\n\n[11월 일정]\n" + calendar[11] + "\n\n[12월 일정\n" + calendar[12]);
+                onAlert("올해 일정", "[1월 일정]\n" + calendar[1] + "\n\n[2월 일정]\n" + calendar[2] + "\n\n[3월 일정]\n" + calendar[3] + "\n\n[4월 일정]\n" + calendar[4] + "\n\n[5월 일정]\n" + calendar[5] + "\n\n[6월 일정]\n" + calendar[6] + "\n\n[7월 일정]\n" + calendar[7] + "\n\n[8월 일정]\n" + calendar[8] + "\n\n[9월 일정]\n" + calendar[9] + "\n\n[10월 일정]\n" + calendar[10] + "\n\n[11월 일정]\n" + calendar[11] + "\n\n[12월 일정\n" + calendar[12]);
                 break;
         }
     }
@@ -532,7 +538,7 @@ public class MainActivity extends AppCompatActivity
                                                 //Log.d("" + i, lunch_month[i]);
                                             }
 
-                                            if(Integer.parseInt(formatDate) >= 19) {
+                                            if(Integer.parseInt(formatDate) >= 18) {
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
@@ -545,7 +551,7 @@ public class MainActivity extends AppCompatActivity
                                             }
                                         }
                                         else {
-                                            if(Integer.parseInt(formatDate) >= 19) {
+                                            if(Integer.parseInt(formatDate) >= 18) {
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
@@ -559,7 +565,7 @@ public class MainActivity extends AppCompatActivity
 
                                     else {
 
-                                        if(Integer.parseInt(formatDate) >= 19)
+                                        if(Integer.parseInt(formatDate) >= 18)
                                             if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                 btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                             else {
@@ -764,10 +770,12 @@ public class MainActivity extends AppCompatActivity
 
                                             //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
 
-                                            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                                                btn_schedule.setText("Today Schedule\n\n행복한 주말");
-                                            else {
-                                                if(Integer.parseInt(formatDate) >= 19)
+                                            if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                                                btn_schedule.setText("Today Schedule\n\n행복한 토요일");
+                                            else if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                                                btn_schedule.setText("Monday Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
+                                            } else {
+                                                if(Integer.parseInt(formatDate) >= 18)
                                                     btn_schedule.setText("Tomorrow Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
                                                 else
                                                     btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);
@@ -783,10 +791,12 @@ public class MainActivity extends AppCompatActivity
 
                                         //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
 
-                                        if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-                                            btn_schedule.setText("Today Schedule\n\n행복한 주말");
-                                        else {
-                                            if (Integer.parseInt(formatDate) >= 19)
+                                        if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                                            btn_schedule.setText("Today Schedule\n\n행복한 토요일");
+                                        else if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                                            btn_schedule.setText("Monday Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
+                                        } else {
+                                            if (Integer.parseInt(formatDate) >= 18)
                                                 btn_schedule.setText("Tomorrow Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 1]);
                                             else
                                                 btn_schedule.setText("Today Schedule\n\n" + schedule[oCalendar.get(Calendar.DAY_OF_WEEK) - 2]);

@@ -1,6 +1,9 @@
 package com.haeyum.pcm_citizen;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -67,6 +71,17 @@ public class BookSearchActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), BookInformationActivity.class));
             }
         });
+
+        ConnectivityManager cManager;
+        NetworkInfo mobile;
+        NetworkInfo wifi;
+
+        cManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        mobile = cManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        wifi = cManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+        if(!(mobile.isConnected() || wifi.isConnected()))
+            Toast.makeText(this, "도서 검색시 네트워크에 연결되어 있어야합니다!", Toast.LENGTH_SHORT).show();
     }
 
     void loadHtml(final int menu) { // 웹에서 html 읽어오기
