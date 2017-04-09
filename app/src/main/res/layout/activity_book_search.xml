@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="c언어"
+        android:text=""
         android:hint="검색할 도서 제목"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"

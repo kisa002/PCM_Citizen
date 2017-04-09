@@ -188,13 +188,11 @@ public class MainActivity extends AppCompatActivity
         }
         else
         {
-            //급식 비교 추가해야함
-
             //날씨
             btn_weather.setText("Today Weather\n\n네트워크를 연결해주세요.\n연결이 되어야 날씨 확인이 가능합니다");
 
             //급식
-            btn_lunch.setText("Today Lunch[A]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+            btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
             lunch_load();
 
             //시간표
@@ -341,6 +339,10 @@ public class MainActivity extends AppCompatActivity
         });
         switch (v.getId()) {
 
+            case R.id.btn_search:
+                startActivity(new Intent(this, BookSearchActivity.class));
+                break;
+
             case R.id.btn_weather:
                 urlAddress = "http://www.accuweather.com/ko/kr/pyeongchon-dong/2041963/current-weather/2041963";
                 loadHtml(1);
@@ -376,16 +378,12 @@ public class MainActivity extends AppCompatActivity
             lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
         /*
         int max_lunch = lunch.getInt("lunch_max" + year + monthC, 0);
-
         String temp = "";
-
         for(int i=1; i<=max_lunch; i++)
         {
             lunch_month[i] = lunch.getString("lunch_" + year + monthC + "m" + i + "d",null);
-
             temp += "[" + i + "일 급식]" + lunch_month[i] + "\n";
         }
-
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
@@ -393,7 +391,6 @@ public class MainActivity extends AppCompatActivity
                 dialog.dismiss();     //닫기
             }
         });
-
         alert.setTitle("이번달 급식");
         alert.setMessage(temp);
         //alert.show();
@@ -539,12 +536,12 @@ public class MainActivity extends AppCompatActivity
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
-                                                    btn_lunch.setText("Today Lunch[B]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
+                                                    btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
                                                     //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC) + 1) + "m" + 1 + "d", "ERROR CODE W000"));
                                                 }
                                             }
                                             else {
-                                                btn_lunch.setText("Today Lunch[C]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
+                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W000"));
                                             }
                                         }
                                         else {
@@ -552,12 +549,12 @@ public class MainActivity extends AppCompatActivity
                                                 if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                     btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                                 else {
-                                                    btn_lunch.setText("Today Lunch[D]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                    btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                                     //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC)+1) + "m" + 1 + "d", "ERROR CODE W000"));
                                                 }
                                             }
                                             else
-                                                btn_lunch.setText("Today Lunch[E]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                         }
 
                                     else {
@@ -566,18 +563,18 @@ public class MainActivity extends AppCompatActivity
                                             if(spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "failed").equals("failed"))
                                                 btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + (day + 1) + "d", "ERROR CODE W000"));
                                             else {
-                                                btn_lunch.setText("Today Lunch[F]\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
+                                                btn_lunch.setText("Today Lunch\n\n" + spLunch.getString("lunch_" + year + monthC + "m" + day + "d", "ERROR CODE W001"));
                                                 //btn_lunch.setText("Tomorrow Lunch\n\n" + spLunch.getString("lunch_" + year + (Integer.parseInt(monthC)+1) + "m" + 1 + "d", "ERROR CODE W000"));
                                             }
                                     }
 
-                                        lunch_text = "";
-                                        max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
+                                    lunch_text = "";
+                                    max_lunch = spLunch.getInt("lunch_max" + year + monthC, 0);
 
-                                        for(i=1; i<=max_lunch; i++) {
-                                            lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
-                                        }
-                                        //onAlert("", lunch_text);
+                                    for(i=1; i<=max_lunch; i++) {
+                                        lunch_text += "[" + i + "일 급식]\n" + spLunch.getString("lunch_" + year + monthC + "m" + i + "d", "ERROR CODE W002") + "\n\n";
+                                    }
+                                    //onAlert("", lunch_text);
 
                                     break;
 
@@ -623,7 +620,7 @@ public class MainActivity extends AppCompatActivity
                                         lunch_text = lunch_text.replace(">[중식]", "");
                                         lunch_text = lunch_text.replace("[중식]", "");
 
-                                        btn_lunch.setText("TODAY LUNCH[H]\n" + lunch_text);
+                                        btn_lunch.setText("TODAY LUNCH\n" + lunch_text);
 
                                         alert.setTitle("오늘 급식");
                                         alert.setMessage(lunch_text);
@@ -633,7 +630,7 @@ public class MainActivity extends AppCompatActivity
                                     else {
 
                                         lunch_text = "오늘 급식은 없습니다.";
-                                        btn_lunch.setText("TODAY LUNCH[I]\n\n" + lunch_text);
+                                        btn_lunch.setText("TODAY LUNCH\n\n" + lunch_text);
 
                                         alert.setTitle("오늘 급식");
                                         alert.setMessage(lunch_text);
@@ -767,10 +764,6 @@ public class MainActivity extends AppCompatActivity
 
                                             //final String[] week = { "일", "월", "화", "수", "목", "금", "토" };
 
-                                            //캘린더 이 부분 다음달로 넘어간다면 안바뀌도록 해보자..
-                                            Calendar c = Calendar.getInstance();
-                                            c.set(day, month, 1);
-
                                             if(oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || oCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
                                                 btn_schedule.setText("Today Schedule\n\n행복한 주말");
                                             else {
@@ -839,7 +832,7 @@ public class MainActivity extends AppCompatActivity
                                                     if(calendar[i].length() > 0)
                                                         calendar[i] = calendar[i].substring(0, calendar[i].length() - 1);
                                                     //else
-                                                        //onAlert("", String.valueOf(i));
+                                                    //onAlert("", String.valueOf(i));
                                                 }
 
                                                 //Log.d("i : " + i, calendar[i]);

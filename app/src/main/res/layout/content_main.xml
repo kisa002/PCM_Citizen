@@ -28,17 +28,37 @@
             android:layout_centerHorizontal="true"
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
+
+            <Button
+                android:background="@drawable/round_search"
+                android:text="도서관 도서 검색"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="14dp"
+
+                android:paddingLeft="30dp"
+                android:drawableLeft="@android:drawable/ic_menu_search"
+                android:drawablePadding="18dp"
+                android:gravity="left|center_vertical"
+
+                android:id="@+id/btn_search"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:onClick="onClick"
+                android:textSize="20dp"/>
+
             <Button
                 android:background="@drawable/round"
                 android:text="TODAY WEATHER\n\nSERVER CONNECTING..."
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="23dp"
                 android:id="@+id/btn_weather"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:onClick="onClick"
                 android:textSize="20dp"/>
+
             <Button
                 android:background="@drawable/round"
                 android:text="Today Lunch\n\nServer Connecting..."
