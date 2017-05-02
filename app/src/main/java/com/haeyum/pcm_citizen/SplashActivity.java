@@ -58,7 +58,7 @@ public class SplashActivity extends Activity {
         }, 2000);
 
         TextView tvSplash = (TextView)findViewById(R.id.TextSplash);
-        tvSplash.setText("ver 1.0");
+        tvSplash.setText("ver 1.2");
 
         //SP
         //spVersion = getSharedPreferences("Version", 0);
